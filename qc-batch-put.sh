@@ -9,5 +9,5 @@ cat $listfile
 list=$(cat $listfile)
 
 for file in $list; do
-qrsctl put -c facex-zfnet-end2end-250k350k $file $file && echo $file " >>>>> upload fineished" && echo $file " >>>>> upload fineished">>$rltfile
+qrsctl put -c facex-zfnet-end2end-250k350k $file $file && echo $file " >>>>> upload finished" && echo $file " >>>>> upload finished">>$rltfile
 done
