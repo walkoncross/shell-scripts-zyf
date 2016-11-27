@@ -7,5 +7,5 @@ cat $listfile
 list=$(cat $listfile)
 
 for file in $list; do
-wget $file >>>>> upload fineished" && echo $file " >>>>> download fineished" && echo $file " >>>>> download fineished">>$rltfile
+wget $file && echo $file " >>>>> download fineished" && echo $file " >>>>> download fineished">>$rltfile
 done
