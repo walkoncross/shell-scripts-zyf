@@ -1,0 +1,4 @@
+http://dlib.net/files/data/CU_dogs_fully_labeled.tar.gz
+http://dlib.net/files/data/dlib_face_detection_dataset-2016-09-30.tar.gz
+http://dlib.net/files/data/dlib_face_detector_training_data.tar.gz
+http://dlib.net/files/data/ibug_300W_large_face_landmark_dataset.tar.gz
