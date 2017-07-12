@@ -7,7 +7,7 @@ fi
 
 echo 'Kill all proceed with name contains ' $1
 
-ex_pid=0
+ex_pid=1
 
 if [ $# -gt 1 ]; then
     ex_pid=$2
