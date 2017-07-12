@@ -1,2 +1,0 @@
-http://www.openu.ac.il/home/hassner/projects/cnn_emotions/LBP_mapping_Matlab.zip	emotion_LBP_mapping_Matlab.zip 
-https://dl.dropboxusercontent.com/u/38822310/DemoDir.zip	emotion_DemoDir-trained-models.zip
