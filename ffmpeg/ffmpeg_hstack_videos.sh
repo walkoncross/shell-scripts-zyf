@@ -28,7 +28,7 @@ fi
 if [[ $# -eq 2 ]]; then
 	basename1=$(basename $1)
 	basename2=$(basename $2)
-	output_video=${basename1%%.*}'_vs_'${basename2%%.*}'_hstack.mp4'
+	output_video=${basename1%%.*}'_and_'${basename2%%.*}'_hstack.mp4'
 else
 	output_video=${3%%.*}'.mp4'
 fi
