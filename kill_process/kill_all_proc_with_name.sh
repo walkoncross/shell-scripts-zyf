@@ -4,20 +4,20 @@
 function show_usage {
     cmd_name=$(basename $0)
     echo "Usage: "
-    echo "$cmd_name <proceed_name> [<except_pid>]"
-    echo "Kill all proceed with name contains <proceed_name> except the one with <except_pid>"
-    echo "  <proceed_name>: proceed name (e.g. vi, python), proceeds with this name will be killed"
-    echo "  <except_pid>: (optional) proceed pid to be an exception"
+    echo "$cmd_name <process_name> [<except_pid>]"
+    echo "Kill all process with name contains <process_name> except the one with <except_pid>"
+    echo "  <process_name>: process name (e.g. vi, python), processs with this name will be killed"
+    echo "  <except_pid>: (optional) process pid to be an exception"
 }
 
 
 if [ $# -lt 1 ]; then
     show_usage
-    echo 'Please input a proceed name to kill'
+    echo 'Please input a process name to kill'
     exit
 fi
 
-echo 'Kill all proceed with name contains ' $1
+echo 'Kill all process with name contains ' $1
 
 ex_pid=1
 
