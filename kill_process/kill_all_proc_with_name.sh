@@ -1,6 +1,18 @@
 #!/bin/bash
+## Author: zhaoyafei0210@gmail.com
+
+function show_usage {
+    cmd_name=$(basename $0)
+    echo "Usage: "
+    echo "$cmd_name <proceed_name> [<except_pid>]"
+    echo "Kill all proceed with name contains <proceed_name> except the one with <except_pid>"
+    echo "  <proceed_name>: proceed name (e.g. vi, python), proceeds with this name will be killed"
+    echo "  <except_pid>: (optional) proceed pid to be an exception"
+}
+
+
 if [ $# -lt 1 ]; then
-    echo 'usage: kill_all_proc_with_name.sh <proceed_name> [<except_pid>]'
+    show_usage
     echo 'Please input a proceed name to kill'
     exit
 fi
