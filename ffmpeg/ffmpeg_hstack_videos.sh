@@ -20,7 +20,7 @@ function show_usage {
     echo "		<output_video>: optional, path name ended with .mp4 for the output video"
 }
 
-if [[ $# -lt 1 || $# -gt 3 || $1 == '-h' || $1 == '--help' ]]; then
+if [[ $# -lt 2 || $# -gt 3 ]]; then
 	show_usage
     exit
 fi
@@ -35,4 +35,40 @@ fi
 
 echo "===> The output video will be saved into: ${output_video}"
 
-ffmpeg -i $1 -i $2 -filter_complex hstack ${output_video}
+resolution1=`ffprobe -v error \
+	-select_streams v:0 \
+	-show_entries stream=width,height \
+	-of csv=s=x:p=0 \
+	$1`
+
+echo "---> resolution ($1): $resolution1"
+
+resolution2=`ffprobe -v error \
+	-select_streams v:0 \
+	-show_entries stream=width,height \
+	-of csv=s=x:p=0 \
+	$2`
+
+echo "---> resolution ($2): $resolution2"
+
+ht1=${resolution1##*x}
+ht2=${resolution2##*x}
+
+if [[ $ht1 == $ht2 ]]; then
+	echo "---> The two videos have the same height, just stack them"
+	ffmpeg -i $1 -i $2 -filter_complex hstack ${output_video}
+else
+	echo "---> The two videos have the different height, resize the second one and then stack them"
+	# #w=-2, refer to: https://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2
+	ffmpeg -i $1 -i $2 	\
+		-filter_complex '[1:v][0:v] scale2ref=w=-2:h=ih [rightvid][leftvid]; [leftvid][rightvid] hstack [outvid]' \
+		-map '[outvid]' \
+		-map 0:a \
+		${output_video}
+fi
+
+# ffmpeg -i 0.mp4 -i 0_1.mp4 \
+# 	-filter_complex '[1:v][0:v] scale2ref=w=-2:h=ih [rightvid][leftvid]; [leftvid]][rightvid] hstack [outvid]' \
+# 	-map '[outvid]' \
+# 	-map 0:a \
+# 	0_and_0_1_hstack.mp4
