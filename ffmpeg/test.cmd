@@ -1,5 +1,5 @@
 # show text in the interval 5-10
-5.0-10.0 [enter] drawtext reinit 'fontsize=56:fontfile=FreeSerif.ttf:text=hello world',
+5.0-10.0 [enter] drawtext reinit 'fontsize=56:fontcolor=green:fontfile=FreeSerif.ttf:text=hello world',
          [leave] drawtext reinit 'fontfile=FreeSerif.ttf:text=';
 
 # desaturate the image in the interval 10-15
