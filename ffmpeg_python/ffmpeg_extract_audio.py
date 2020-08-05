@@ -3,10 +3,11 @@
 
 from __future__ import unicode_literals, print_function
 import argparse
-import ffmpeg
 import sys
 import os
 import os.path as osp
+
+import ffmpeg
 
 
 def extract_audio_into_file(video, save_dir='', ext_format='mp3',

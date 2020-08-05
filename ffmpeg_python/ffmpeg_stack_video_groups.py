@@ -3,11 +3,12 @@
 
 from __future__ import unicode_literals, print_function
 import argparse
-import ffmpeg
 import sys
 import os
 import os.path as osp
 import glob
+
+import ffmpeg
 
 
 def get_video_stream_info(video_filename):
