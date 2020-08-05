@@ -15,7 +15,7 @@ def extract_audio_into_file(video, save_dir='', ext_format='mp3',
     audio_file = osp.splitext(video)[0]+'.'+ext_format
 
     if save_dir:
-        basename = osp.splitext(audio_file)
+        basename = osp.basename(audio_file)
         if not osp.isdir(save_dir):
             os.makedirs(save_dir)
         audio_file = osp.join(save_dir, basename)

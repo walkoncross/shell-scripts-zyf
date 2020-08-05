@@ -16,13 +16,13 @@ def get_video_stream_info(video_filename):
         print(e.stderr, file=sys.stderr)
         sys.exit(1)
 
-    video_stream = next(
+    video_stream_info = next(
         (stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
-    if video_stream is None:
+    if video_stream_info is None:
         print('No video stream found', file=sys.stderr)
         sys.exit(1)
 
-    return video_stream
+    return video_stream_info
 
 
 def stack_two_videos(video1, video2, save_dir='./', vstack=False):
@@ -93,6 +93,9 @@ def stack_two_videos(video1, video2, save_dir='./', vstack=False):
             stacked_video = ffmpeg.filter((video1, video2_resized), 'hstack')
 
     out_stream = ffmpeg.output(stacked_video, audio1, output)
+    cmdline = ffmpeg.compile(out_stream)
+    print('===> ffmpeg cmdline:', cmdline)
+
     out_stream.run()
 
 

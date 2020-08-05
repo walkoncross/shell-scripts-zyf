@@ -94,6 +94,9 @@ def stack_two_videos(video1, video2, save_dir='./', vstack=False):
             stacked_video = ffmpeg.filter((video1, video2_resized), 'hstack')
 
     out_stream = ffmpeg.output(stacked_video, audio1, output)
+    cmdline = ffmpeg.compile(out_stream)
+    print('===> ffmpeg cmdline:', cmdline)
+
     out_stream.run()
 
 
