@@ -13,7 +13,7 @@ import librosa
 import json
 
 from .stream_info import get_video_stream_info
-
+from .utils import join_two_filenames
 
 def stack_two_videos(video1, video2,
                      save_dir='./',
@@ -35,10 +35,8 @@ def stack_two_videos(video1, video2,
     if not osp.isdir(save_dir):
         os.makedirs(save_dir)
 
-    basename1 = osp.splitext(osp.basename(video1))[0]
-    basename2 = osp.splitext(osp.basename(video2))[0]
-    output_path = '{}_and_{}_{}stack.mp4'.format(
-        basename1, basename2, 'v' if vstack else 'h')
+    joined_name = join_two_filenames(video1, video2, '_and_')
+    output_path = '{}_{}stack.mp4'.format( joined_name, 'v' if vstack else 'h')
     output_path = osp.join(save_dir, output_path)
 
     print('===> Video1: ', video1)

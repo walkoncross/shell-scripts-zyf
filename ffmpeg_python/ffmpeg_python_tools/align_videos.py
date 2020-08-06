@@ -7,11 +7,11 @@ import os.path as osp
 
 import json
 from .align_offsets import get_align_offsets
+from .utils import join_two_filenames
 
 
 def get_video_align_info(
         video1, video2,
-        save_dir='./',
         trim_min_level=0.01,
         force_trim=False,
         verbose=0):
@@ -27,24 +27,17 @@ def get_video_align_info(
                 "time_duration": time_duration,
             }
     """
-    if not osp.exists(save_dir):
-        os.makedirs(save_dir)
-
     rootname1 = osp.splitext(video1)[0]
     rootname2 = osp.splitext(video2)[0]
 
     trim_info_json1 = rootname1 + '.trim_info.json'
     trim_info_json2 = rootname2 + '.trim_info.json'
 
-    align_info_json = '{}_and_{}.align_info.json'.format(
-        osp.basename(rootname1), osp.basename(rootname2))
-    align_info_json = osp.join(save_dir, align_info_json)
-
     align_info_dict = dict()
 
     if not osp.isfile(trim_info_json1) or force_trim:
         video1_trim_info = extract_audio_and_get_trim_info(
-            video1, save_dir,
+            video1, save_dir=None,
             ext_format='mp3',
             trim_min_level=trim_min_level,
             force_overwrite=True)
@@ -68,7 +61,7 @@ def get_video_align_info(
 
     if not osp.isfile(trim_info_json2) or force_trim:
         video2_trim_info = extract_audio_and_get_trim_info(
-            video2, save_dir,
+            video2, save_dir=None,
             ext_format='mp3',
             trim_min_level=trim_min_level,
             force_overwrite=True)
@@ -99,13 +92,6 @@ def get_video_align_info(
     if verbose:
         print('===> align info: ')
         print(json.dumps(align_info_dict, indent=2))
-
-    if verbose:
-        print('===> save align info into: ', align_info_json)
-
-    fp = open(align_info_json, 'w')
-    json.dump(align_info_json, fp, indent=2)
-    fp.close()
 
     return align_info_dict
 
