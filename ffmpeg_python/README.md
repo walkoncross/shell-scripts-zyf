@@ -18,6 +18,8 @@
   - for help info: ```python ffmpeg_stack_videos.py -h```
 - stack two videos with audio alignment: [ffmpeg_stack_videos_with_audio_alignment](./ffmpeg_stack_videos_with_audio_alignment.py)
   - for help info: ```python ffmpeg_stack_videos_with_audio_alignment.py -h```
+- stack two videos with audio alignment using trim info json: [ffmpeg_stack_videos_with_trim_files](./ffmpeg_stack_videos_with_trim_files.py)
+  - for help info: ```python ffmpeg_stack_videos_with_trim_files.py -h```
 - stack groups of videos : [ffmpeg_stack_video_groups](./ffmpeg_stack_video_groups.py)
   - for help info: ```python ffmpeg_stack_video_groups.py -h```
 - stack groups of videos with audio alignment: [ffmpeg_stack_video_groups_with_audio_alignment](./ffmpeg_stack_video_groups_with_audio_alignment.py)
