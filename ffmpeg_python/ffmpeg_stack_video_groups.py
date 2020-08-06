@@ -7,10 +7,11 @@ import sys
 import os
 import os.path as osp
 
-from ffmpeg_python_tools import get_video_groups, stack_two_videos
+from ffmpeg_python_tools import get_video_filelist, get_video_groups, stack_two_videos
 
 
-def stack_video_list_in_pairs(root_dir, video_list, save_dir='./', vstack=False):
+def stack_video_list_in_pairs(root_dir, video_list, 
+        save_dir='./', vstack=False, verbose=False):
     n_videos = len(video_list)
 
     for i in range(n_videos):
@@ -19,23 +20,31 @@ def stack_video_list_in_pairs(root_dir, video_list, save_dir='./', vstack=False)
             video_file = stack_two_videos(
                 osp.join(root_dir, video_list[i]),
                 osp.join(root_dir, video_list[j]),
-                save_dir, vstack
+                save_dir, 
+                vstack,
+                verbose=verbose
             )
             print('===> Stacked video file saved into: ', video_file)
 
 
-def stack_video_groups(root_dir, video_group_list, save_dir='./', vstack=False):
+def stack_video_groups(root_dir, video_group_list, save_dir='./', 
+        vstack=False, verbose=False):
     for group in video_group_list:
         if len(group) > 1:
             print('===> stack group: ', group)
-            stack_video_list_in_pairs(root_dir, group, save_dir, vstack)
+            stack_video_list_in_pairs(root_dir, group, save_dir, vstack, verbose=verbose)
 
 
-def list_and_stack_video_groups(root_dir, save_dir='', suffixes='', group_pattern_delimiter='_', vstack=False):
+def list_and_stack_video_groups(root_dir, save_dir='', suffixes='', 
+            group_pattern_delimiter='_', vstack=False, verbose=False):
+    video_filelist = get_video_filelist(root_dir, suffixes, verbose=verbose)
+    print('===> video_filelist: ', video_filelist)
+
     group_list = get_video_groups(
-        root_dir, suffixes, group_pattern_delimiter)
+        video_filelist, group_pattern_delimiter, verbose=verbose)
     print('===> group list: ', group_list)
-    stack_video_groups(root_dir, group_list, save_dir, vstack)
+    
+    stack_video_groups(root_dir, group_list, save_dir, vstack, verbose=verbose)
 
 
 def _make_argparser():
@@ -80,5 +89,6 @@ if __name__ == '__main__':
         args.save_dir,
         args.suffixes,
         args.delimiter,
-        args.vstack
+        args.vstack,
+        verbose=True
     )

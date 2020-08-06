@@ -8,14 +8,15 @@ import os
 import os.path as osp
 import json
 
-from ffmpeg_python_tools import get_video_groups, extract_audio_and_get_trim_info, stack_two_videos_with_trim_dicts
+from ffmpeg_python_tools import get_video_filelist, get_video_groups, extract_audio_and_get_trim_info, stack_two_videos_with_trim_dicts
 
 
 def stack_video_list_in_pairs(root_dir,
                               video_list,
                               trim_info_dict_list,
                               save_dir='./',
-                              vstack=False):
+                              vstack=False,
+                              verbose=False):
     n_videos = len(video_list)
 
     for i in range(n_videos):
@@ -26,7 +27,8 @@ def stack_video_list_in_pairs(root_dir,
                 osp.join(root_dir, video_list[j]),
                 save_dir, vstack,
                 video1_trim_info_dict=trim_info_dict_list[i],
-                video2_trim_info_dict=trim_info_dict_list[j]
+                video2_trim_info_dict=trim_info_dict_list[j],
+                verbose=verbose
             )
             print('===> Stacked video file saved into: ', video_file)
 
@@ -35,7 +37,8 @@ def stack_video_groups(root_dir,
                        video_group_list,
                        trim_info_dict_list_list,
                        save_dir='./',
-                       vstack=False):
+                       vstack=False,
+                       verbose=False):
     for i, group in enumerate(video_group_list):
         if len(group) > 1:
             print('===> stack group: ', group)
@@ -43,16 +46,22 @@ def stack_video_groups(root_dir,
                                       group,
                                       trim_info_dict_list_list[i],
                                       save_dir,
-                                      vstack)
+                                      vstack,
+                                      verbose=verbose
+                                      )
 
 
 def list_and_stack_video_groups(root_dir,
                                 save_dir='',
                                 suffixes='',
                                 group_pattern_delimiter='_',
-                                vstack=False):
+                                vstack=False,
+                                verbose=False):
+    video_filelist = get_video_filelist(root_dir, suffixes, verbose=verbose)
+    print('===> video_filelist: ', video_filelist)
+
     group_list = get_video_groups(
-        root_dir, suffixes, group_pattern_delimiter)
+        video_filelist, group_pattern_delimiter, verbose=verbose)
     print('===> group list: ', group_list)
 
     # Get *.trim_info.json
@@ -61,7 +70,7 @@ def list_and_stack_video_groups(root_dir,
         trim_info_dict_list = []
         for fn in group:
             full_name = osp.join(root_dir, fn)
-            trim_info_json = osp.splitext(full_name)+'.trim_info.json'
+            trim_info_json = osp.splitext(full_name)[0]+'.trim_info.json'
 
             if not osp.isfile(trim_info_json):
                 _, trim_info_dict = extract_audio_and_get_trim_info(
@@ -79,6 +88,7 @@ def list_and_stack_video_groups(root_dir,
                 fp = open(trim_info_json, 'r')
                 trim_info_dict = json.load(fp)
                 fp.close()
+
             trim_info_dict_list.append(trim_info_dict)
         trim_info_dict_list_list.append(trim_info_dict_list)
 
