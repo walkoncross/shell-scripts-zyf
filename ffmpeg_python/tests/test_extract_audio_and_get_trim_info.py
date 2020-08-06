@@ -10,6 +10,7 @@ import os.path as osp
 
 TEST_DIR = osp.dirname(__file__)
 print('===> TEST_DIR: ', TEST_DIR)
+print('===> TEST FILE:', __file__)
 sys.path.append(osp.dirname(TEST_DIR))
 
 from ffmpeg_python_tools import extract_audio_and_get_trim_info
@@ -20,7 +21,6 @@ def _make_argparser():
         description='Extract audio channels from video and save into mp3/wav/aac file, '
         'and also return trim infos (trim_start_time, trim_end_time, trim_duration, etc.).')
     parser.add_argument('-f', '--force', '--ow', '--overwrite',
-                        type=bool,
                         dest='force_overwrite',
                         default=False,
                         action='store_true',
@@ -57,6 +57,6 @@ if __name__ == '__main__':
         args.trim_min_level,
         args.force_overwrite
     )
-    
+
     print('===> Extraced audio file saved into: ', audio_file)
     print('===> trim info dict: ', trim_info_dict)

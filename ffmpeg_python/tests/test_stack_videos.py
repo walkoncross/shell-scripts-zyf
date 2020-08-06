@@ -10,6 +10,7 @@ import os.path as osp
 
 TEST_DIR = osp.dirname(__file__)
 print('===> TEST_DIR: ', TEST_DIR)
+print('===> TEST FILE:', __file__)
 sys.path.append(osp.dirname(TEST_DIR))
 from ffmpeg_python_tools import stack_two_videos
 

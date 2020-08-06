@@ -13,7 +13,6 @@ def _make_argparser():
     parser = argparse.ArgumentParser(
         description='Extract audio channels from video and save into mp3/wav/aac file.')
     parser.add_argument('-f', '--force', '--ow', '--overwrite',
-                        type=bool,
                         dest='force_overwrite',
                         default=False,
                         action='store_true',

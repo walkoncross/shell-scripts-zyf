@@ -20,7 +20,6 @@ def _make_argparser():
         description='Extract audio channels from video and save into mp3/wav/aac file, '
         'and also return trim infos (trim_start_time, trim_end_time, trim_duration, etc.).')
     parser.add_argument('-f', '--force', '--ow', '--overwrite',
-                        type=bool,
                         dest='force_overwrite',
                         default=False,
                         action='store_true',

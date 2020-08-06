@@ -11,6 +11,7 @@ import argparse
 
 TEST_DIR = osp.dirname(__file__)
 print('===> TEST_DIR: ', TEST_DIR)
+print('===> TEST FILE:', __file__)
 sys.path.append(osp.dirname(TEST_DIR))
 
 from ffmpeg_python_tools import get_video_align_info
@@ -59,8 +60,7 @@ if __name__ == '__main__':
     align_info_json = joined_name + '.align_info.json'
     align_info_json = osp.join(args.save_dir, align_info_json)
 
-    if args.verbose:
-        print('===> save align info into: ', align_info_json)
+    print('===> save align info into: ', align_info_json)
 
     fp = open(align_info_json, 'w')
     json.dump(align_info_json, fp, indent=2)
