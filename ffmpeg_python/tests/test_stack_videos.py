@@ -11,7 +11,6 @@ import os.path as osp
 TEST_DIR = osp.dirname(__file__)
 print('===> TEST_DIR: ', TEST_DIR)
 sys.path.append(osp.dirname(TEST_DIR))
-
 from ffmpeg_python_tools import stack_two_videos
 
 
@@ -35,11 +34,13 @@ def _make_argparser():
 if __name__ == '__main__':
     parser = _make_argparser()
     args = parser.parse_args()
+    print('===> Args: ', args)
 
-    stack_two_videos(
+    video_file = stack_two_videos(
         args.video1,
         args.video2,
         args.save_dir,
         args.vstack,
         verbose=1
     )
+    print('===> Stacked video file saved into: ', video_file)

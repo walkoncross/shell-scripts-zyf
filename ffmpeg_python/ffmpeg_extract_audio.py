@@ -7,33 +7,7 @@ import sys
 import os
 import os.path as osp
 
-import ffmpeg
-
-
-def extract_audio_into_file(video, save_dir='', ext_format='mp3',
-                            force_overwrite=False):
-    print('===> Video: ', video)
-    audio_file = osp.splitext(video)[0]+'.'+ext_format
-
-    if save_dir:
-        basename = osp.basename(audio_file)
-        if not osp.isdir(save_dir):
-            os.makedirs(save_dir)
-        audio_file = osp.join(save_dir, basename)
-    print('===> audio_file: ', audio_file)
-
-    if not osp.isfile(audio_file) or force_overwrite:
-        in_stream = ffmpeg.input(video)
-
-        out_stream = ffmpeg.output(in_stream.audio, audio_file)
-        cmdline = ffmpeg.compile(out_stream)
-        print('===> ffmpeg cmdline:', cmdline)
-        out_stream.run()
-    else:
-        print('===> audio file already exists, skip')
-
-    return audio_file
-
+from ffmpeg_python_tools import extract_audio_into_file
 
 def _make_argparser():
     parser = argparse.ArgumentParser(
@@ -61,10 +35,13 @@ def _make_argparser():
 if __name__ == '__main__':
     parser = _make_argparser()
     args = parser.parse_args()
+    print('===> Args: ', args)
 
-    extract_audio_into_file(
+    audio_file = extract_audio_into_file(
         args.video,
         args.save_dir,
         args.ext_format,
         args.force_overwrite
     )
+
+    print('===> Extraced audio file saved into: ', audio_file)

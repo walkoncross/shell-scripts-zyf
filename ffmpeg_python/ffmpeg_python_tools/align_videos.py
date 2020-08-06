@@ -36,7 +36,7 @@ def get_video_align_info(
     align_info_dict = dict()
 
     if not osp.isfile(trim_info_json1) or force_trim:
-        video1_trim_info = extract_audio_and_get_trim_info(
+        _, video1_trim_info = extract_audio_and_get_trim_info(
             video1, save_dir=None,
             ext_format='mp3',
             trim_min_level=trim_min_level,
@@ -60,7 +60,7 @@ def get_video_align_info(
         print('===> trim info: ', json.dumps(video1_trim_info, indent=2))
 
     if not osp.isfile(trim_info_json2) or force_trim:
-        video2_trim_info = extract_audio_and_get_trim_info(
+        _, video2_trim_info = extract_audio_and_get_trim_info(
             video2, save_dir=None,
             ext_format='mp3',
             trim_min_level=trim_min_level,

@@ -6,12 +6,10 @@ import argparse
 import sys
 import os
 import os.path as osp
-
-import ffmpeg
-import librosa
-
 import json
-from ffmpeg_python_tools import extract_audio_and_get_trim_info, stack_two_videos_with_trim_dicts
+
+
+from ffmpeg_python_tools import stack_two_videos_with_trim_files
 
 
 def _make_argparser():
@@ -22,11 +20,20 @@ def _make_argparser():
                         action='store_true',
                         default=False,
                         help='If set, stack vertically (top-bottom), else stack horizontally (left-right)')
+    parser.add_argument('-na', '--no_align',
+                        dest='try_align',
+                        action='store_false',
+                        default=True,
+                        help='Do not align audio')
     parser.add_argument('video1', help='Input filename for the first video')
     parser.add_argument('video2', help='Input filename for the second video')
     parser.add_argument('save_dir', nargs='?', default=os.getcwd(),
                         help='[Optional] Directory to save output video file, default os.getcwd(),'
                         'output filename: {save_dir}/{video1}_and_{video2}_[h/v]stack.mp4')
+    parser.add_argument('trim_json1', nargs='?', default='',
+                        help='Input filename for the first video')
+    parser.add_argument('trim_json2', nargs='?', default='',
+                        help='Input filename for the second video')
 
     return parser
 
@@ -34,30 +41,15 @@ def _make_argparser():
 if __name__ == '__main__':
     parser = _make_argparser()
     args = parser.parse_args()
-    print('===> Args: ', args)
+    print('===> args: ', args)
 
-    _, trim_info1 = extract_audio_and_get_trim_info(
-        args.video1,
-        save_dir=None,
-        ext_format='mp3',
-        trim_min_level=0.01,
-        force_overwrite=False
-    )
-
-    _, trim_info2 = extract_audio_and_get_trim_info(
-        args.video2,
-        save_dir=None,
-        ext_format='mp3',
-        trim_min_level=0.01,
-        force_overwrite=False
-    )
-
-    video_file = stack_two_videos_with_trim_dicts(
+    video_file = stack_two_videos_with_trim_files(
         args.video1,
         args.video2,
         args.save_dir,
         args.vstack,
-        trim_info1,
-        trim_info2
+        args.trim_json1,
+        args.trim_json2,
+        args.try_align
     )
     print('===> Stacked video file saved into: ', video_file)

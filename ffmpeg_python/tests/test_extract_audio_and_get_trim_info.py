@@ -48,11 +48,15 @@ def _make_argparser():
 if __name__ == '__main__':
     parser = _make_argparser()
     args = parser.parse_args()
+    print('===> Args: ', args)
 
-    extract_audio_and_get_trim_info(
+    audio_file, trim_info_dict = extract_audio_and_get_trim_info(
         args.video,
         args.save_dir,
         args.ext_format,
         args.trim_min_level,
         args.force_overwrite
     )
+    
+    print('===> Extraced audio file saved into: ', audio_file)
+    print('===> trim info dict: ', trim_info_dict)

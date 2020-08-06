@@ -41,10 +41,12 @@ def _make_argparser():
 if __name__ == '__main__':
     parser = _make_argparser()
     args = parser.parse_args()
+    print('===> Args: ', args)
 
-    extract_audio_into_file(
+    audio_file = extract_audio_into_file(
         args.video,
         args.save_dir,
         args.ext_format,
         args.force_overwrite
     )
+    print('===> Extraced audio file saved into: ', audio_file)

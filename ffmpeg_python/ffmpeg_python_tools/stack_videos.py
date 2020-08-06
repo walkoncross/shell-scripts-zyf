@@ -13,7 +13,9 @@ import librosa
 import json
 
 from .stream_info import get_video_stream_info
+from .align_offsets import get_align_offsets
 from .utils import join_two_filenames
+
 
 def stack_two_videos(video1, video2,
                      save_dir='./',
@@ -36,7 +38,7 @@ def stack_two_videos(video1, video2,
         os.makedirs(save_dir)
 
     joined_name = join_two_filenames(video1, video2, '_and_')
-    output_path = '{}_{}stack.mp4'.format( joined_name, 'v' if vstack else 'h')
+    output_path = '{}_{}stack.mp4'.format(joined_name, 'v' if vstack else 'h')
     output_path = osp.join(save_dir, output_path)
 
     print('===> Video1: ', video1)
@@ -115,5 +117,102 @@ def stack_two_videos(video1, video2,
 
     return output_path
 
+def stack_two_videos_with_trim_dicts(video1, video2,
+                                     save_dir='./',
+                                     vstack=False,
+                                     video1_trim_info_dict=None,
+                                     video2_trim_info_dict=None,
+                                     verbose=0):
+    """
+    stack two videos and try to align their audio timeline using trim info dict.
 
-__all__=['stack_two_videos']
+    return:
+        output_path: str
+            path to output video file.
+    """
+
+    align_info_dict = get_align_offsets(
+        video1_trim_info_dict['trim_start_time'], video1_trim_info_dict['trim_end_time'],
+        video2_trim_info_dict['trim_start_time'], video2_trim_info_dict['trim_end_time'],
+        verbose=verbose
+    )
+
+    joined_name = join_two_filenames(video1, video2, '_and_')
+
+    align_info_json = joined_name + '.align_info.json'
+    align_info_json = osp.join(save_dir, align_info_json)
+
+    if verbose:
+        print('===> save align info into: ', align_info_json)
+
+    fp = open(align_info_json, 'w')
+    json.dump(align_info_json, fp, indent=2)
+    fp.close()
+
+    output_path = stack_two_videos(video1, video2,
+                                save_dir,
+                                vstack,
+                                align_info_dict['time_offset1'],
+                                align_info_dict['time_offset1'],
+                                align_info_dict['time_duration'],
+                                verbose=verbose)
+
+return output_path
+
+
+def stack_two_videos_with_trim_files(video1, video2,
+                                save_dir='./',
+                                vstack=False,
+                                trim_info_file1=None,
+                                trim_info_file2=None,
+                                verbose=0):
+    """
+    stack two videos and try to align their audio timeline using trim files.
+
+    return:
+        output_path: str
+            path to output video file.
+    """
+    if not save_dir:
+        save_dir = os.getcwd()
+
+    if not osp.isdir(save_dir):
+        os.makedirs(save_dir)
+
+    if not trim_info_file1:
+        trim_info_file1 = osp.splitext(video1)[0] + '.trim_info.json'
+
+    if not trim_info_file2:
+        trim_info_file2 = osp.splitext(video2)[0] + '.trim_info.json'
+
+    if osp.isfile(trim_info_file1) and osp.isfile(trim_info_file1):
+        if verbose:
+            print('===> load trim info from: ', trim_info_file1)
+
+        fp = open(trim_info_file1, 'r')
+        video1_trim_info_dict = json.load(fp)
+        fp.close()
+
+        if verbose:
+            print('===> load trim info from: ', trim_info_file2)
+
+        fp = open(trim_info_file2, 'r')
+        video2_trim_info_dict = json.load(fp)
+        fp.close()
+        output_path = stack_two_videos_with_trim_dicts(video1, video2,
+                                            save_dir,
+                                            vstack,
+                                            video1_trim_info_dict=video1_trim_info_dict,
+                                            video2_trim_info_dict=video1_trim_info_dict,
+                                            verbose=verbose):
+
+    else:
+        output_path = stack_two_videos(video1, video2,
+                                       save_dir,
+                                       vstack,
+                                       verbose=verbose)
+
+    return output_path
+
+
+__all__ = ['stack_two_videos', 'stack_two_videos_with_trim_dicts', 'stack_two_videos_with_trim_files']

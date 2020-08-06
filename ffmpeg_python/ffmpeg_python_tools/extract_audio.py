@@ -60,21 +60,25 @@ def extract_audio_and_get_trim_info(video,
     extract_audio_and_get_trim_info
 
     return:
-        trim_info_dict: dict
-            a dict with trim info, with structrure like:
-            trim_info_dict = {
-                'audio_file': audio_file,
-                'sample_rate': sample_rate,
-                'audo_len': audio_len,
-                'duration': duration,
-                'max_val': max_val,
-                'trim_min_level': trim_min_level,
-                'trim_start_idx': start_idx,
-                'trim_end_idx': end_idx,
-                'trim_start_time': trim_start_time,
-                'trim_end_time': trim_end_time,
-                'trim_duration': trim_duration
-            }
+        (audio_file, trim_info_dict): a tuple
+            audio_file: str
+                path of saved audio file.
+
+            trim_info_dict: dict
+                a dict with trim info, with structrure like:
+                trim_info_dict = {
+                    'audio_file': audio_file,
+                    'sample_rate': sample_rate,
+                    'audo_len': audio_len,
+                    'duration': duration,
+                    'max_val': max_val,
+                    'trim_min_level': trim_min_level,
+                    'trim_start_idx': start_idx,
+                    'trim_end_idx': end_idx,
+                    'trim_start_time': trim_start_time,
+                    'trim_end_time': trim_end_time,
+                    'trim_duration': trim_duration
+                }
     """
     force_trim = False
 
@@ -87,7 +91,7 @@ def extract_audio_and_get_trim_info(video,
     trim_info_dict = get_audio_trim_info(
         audio_file, trim_min_level, force_trim)
 
-    return trim_info_dict
+    return (audio_file, trim_info_dict)
 
 
 __all__ = ["extract_audio_into_file", 'extract_audio_and_get_trim_info']
