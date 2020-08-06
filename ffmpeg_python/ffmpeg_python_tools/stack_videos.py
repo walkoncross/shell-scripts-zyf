@@ -169,6 +169,11 @@ def stack_two_videos_with_trim_dicts(video1, video2,
         output_path: str
             path to output video file.
     """
+    if not save_dir:
+        save_dir = os.getcwd()
+
+    if not osp.isdir(save_dir):
+        os.makedirs(save_dir)
 
     align_info_dict = get_align_offsets(
         video1_trim_info_dict['trim_start_time'], video1_trim_info_dict['trim_end_time'],

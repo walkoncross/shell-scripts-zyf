@@ -49,6 +49,9 @@ def get_video_filelist(root_dir,
         if not osp.isfile(full_fn):
             continue
 
+        if osp.basename(fn).startswith('.'): # skip files names like .xx.mp4
+            continue
+
         _, ext = osp.splitext(fn)
         if not ext:
             continue

@@ -37,13 +37,21 @@ def stack_video_groups(root_dir, video_group_list, save_dir='./',
 
 def list_and_stack_video_groups(root_dir, save_dir='', suffixes='', 
             group_pattern_delimiter='_', vstack=False, verbose=False):
+    if not osp.exists(root_dir):
+        print('===> root dir does not exist: ', root_dir)
+        exit(1)
+    
+    if not osp.exists(save_dir):
+        print('===> save dir does not exist, make it: ', save_dir)
+        os.makedirs(save_dir)
+
     video_filelist = get_video_filelist(root_dir, suffixes, verbose=verbose)
     print('===> video_filelist: ', video_filelist)
 
     group_list = get_video_groups(
         video_filelist, group_pattern_delimiter, verbose=verbose)
     print('===> group list: ', group_list)
-    
+
     stack_video_groups(root_dir, group_list, save_dir, vstack, verbose=verbose)
 
 

@@ -57,6 +57,15 @@ def list_and_stack_video_groups(root_dir,
                                 group_pattern_delimiter='_',
                                 vstack=False,
                                 verbose=False):
+
+    if not osp.exists(root_dir):
+        print('===> root dir does not exist: ', root_dir)
+        exit(1)
+    
+    if not osp.exists(save_dir):
+        print('===> save dir does not exist, make it: ', save_dir)
+        os.makedirs(save_dir)
+
     video_filelist = get_video_filelist(root_dir, suffixes, verbose=verbose)
     print('===> video_filelist: ', video_filelist)
 
@@ -70,6 +79,7 @@ def list_and_stack_video_groups(root_dir,
         trim_info_dict_list = []
         for fn in group:
             full_name = osp.join(root_dir, fn)
+            print('===> full path: ', full_name)
             trim_info_json = osp.splitext(full_name)[0]+'.trim_info.json'
 
             if not osp.isfile(trim_info_json):
@@ -78,7 +88,8 @@ def list_and_stack_video_groups(root_dir,
                     save_dir=None,
                     ext_format='.mp3',
                     trim_min_level=0.01,
-                    force_overwrite=False
+                    force_overwrite=False,
+                    verbose=verbose
                 )
 
                 fp = open(trim_info_json, 'w')
@@ -141,5 +152,6 @@ if __name__ == '__main__':
         args.save_dir,
         args.suffixes,
         args.delimiter,
-        args.vstack
+        args.vstack,
+        verbose=True
     )
