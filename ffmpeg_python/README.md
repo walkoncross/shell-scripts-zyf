@@ -1,5 +1,14 @@
 # ffmpeg python scripts
+@author: zhaoyafei0210@gmail.com
 
+Moved into: [github repo](https://github.com/walkoncross/ffmpeg-python-tools)
+
+Table of Contents:
+- [ffmpeg python scripts](#ffmpeg-python-scripts)
+  - [ffmpeg](#ffmpeg)
+  - [ffmpeg-python](#ffmpeg-python)
+  - [scripts](#scripts)
+  
 ## ffmpeg
 [ffmpeg online documentation](http://ffmpeg.org/documentation.html)
 
