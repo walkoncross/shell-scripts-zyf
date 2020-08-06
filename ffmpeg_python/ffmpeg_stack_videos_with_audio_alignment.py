@@ -41,7 +41,8 @@ if __name__ == '__main__':
         save_dir=None,
         ext_format='mp3',
         trim_min_level=0.01,
-        force_overwrite=False
+        force_overwrite=False,
+        verbose=True
     )
 
     _, trim_info2 = extract_audio_and_get_trim_info(
@@ -49,7 +50,8 @@ if __name__ == '__main__':
         save_dir=None,
         ext_format='mp3',
         trim_min_level=0.01,
-        force_overwrite=False
+        force_overwrite=False,
+        verbose=True
     )
 
     video_file = stack_two_videos_with_trim_dicts(
@@ -58,6 +60,7 @@ if __name__ == '__main__':
         args.save_dir,
         args.vstack,
         trim_info1,
-        trim_info2
+        trim_info2,
+        verbose=True
     )
     print('===> Stacked video file saved into: ', video_file)

@@ -6,19 +6,35 @@ import os
 import os.path as osp
 
 import json
+from .extract_audio import extract_audio_and_get_trim_info
 from .align_offsets import get_align_offsets
 from .utils import join_two_filenames
 
 
 def get_video_align_info(
-        video1, video2,
+        video1,
+        video2,
         trim_min_level=0.01,
         force_trim=False,
-        verbose=0):
+        verbose=False):
     """
     Get align timeoffsets for two videos.
 
-    return:
+    @params:
+        video1: str
+        video2: str
+            Paths to input videos
+        trim_min_level: float
+            a threshold `trim_min_level` (ration to the max value of audio data)
+        force_trim: bool
+            If False, try to firstly load available trim info json files.
+            If True, calc trim_info_dict. 
+        vstack: bool
+            If True, stack vertically, else, stack horizontally.
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         align_info_dict: dict 
             a dict of time offsets infos, in the format of:
             {
@@ -37,10 +53,11 @@ def get_video_align_info(
 
     if not osp.isfile(trim_info_json1) or force_trim:
         _, video1_trim_info = extract_audio_and_get_trim_info(
-            video1, save_dir=None,
-            ext_format='mp3',
-            trim_min_level=trim_min_level,
-            force_overwrite=True)
+                                    video1,
+                                    save_dir=None,
+                                    ext_format='mp3',
+                                    trim_min_level=trim_min_level,
+                                    force_overwrite=True)
 
         if verbose:
             print('===> save trim info into: ', trim_info_json1)
@@ -61,10 +78,11 @@ def get_video_align_info(
 
     if not osp.isfile(trim_info_json2) or force_trim:
         _, video2_trim_info = extract_audio_and_get_trim_info(
-            video2, save_dir=None,
-            ext_format='mp3',
-            trim_min_level=trim_min_level,
-            force_overwrite=True)
+                                    video2,
+                                    save_dir=None,
+                                    ext_format='mp3',
+                                    trim_min_level=trim_min_level,
+                                    force_overwrite=True)
 
         if verbose:
             print('===> save trim info into: ', trim_info_json2)

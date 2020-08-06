@@ -9,13 +9,21 @@ import os.path as osp
 import json
 
 
-def get_video_filelist(input_dir, 
-                    suffixes=None,
-                     verbose=0):
+def get_video_filelist(root_dir,
+                       suffixes=None,
+                       verbose=False):
     """
-    Get video filelist under input_dir with extension format in suffixes.
+    Get video filelist under root_dir with extension format in suffixes.
 
-    return:
+    @params:
+        root_dir: str
+            root dir to glob video files
+        suffixes: str or list of str
+            video extension formats to glob, i.e. `mp4,avi,mov,mkv` or ['mp4','avi','mov','mkv']
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         video_filelist: list of str
             list of video files
     """
@@ -31,13 +39,13 @@ def get_video_filelist(input_dir,
         print('suffixes must be of str or list type')
         exit(1)
 
-    file_list = os.listdir(input_dir)
+    file_list = os.listdir(root_dir)
     if verbose:
         print('===> file list: ', file_list)
 
     video_filelist = list()
     for fn in file_list:
-        full_fn = osp.join(input_dir, fn)
+        full_fn = osp.join(root_dir, fn)
         if not osp.isfile(full_fn):
             continue
 
@@ -56,21 +64,24 @@ def get_video_filelist(input_dir,
     return video_filelist
 
 
-def get_video_groups(input_dir, suffixes=None,
+def get_video_groups(video_filelist,
                      group_pattern_delimiter='_',
-                     verbose=0):
+                     verbose=False):
     """
-    get_video_groups
+    Get video groups
 
-    return:
+    @params:
+        video_filelist: list of str
+            list of video files
+        group_pattern_delimiter: str
+            video group pattern delimiter, grouped videos have name patter: {gn}{delimiter}{fn}.{ext}
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         group_list: list of list of str
             list of groups
     """
-
-    video_filelist = get_video_filelist(input_dir, suffixes, verbose)
-    # if verbose:
-    #     print('===> video file list: ', video_filelist)
-
     tmp_list = []
     for fn in video_filelist:
         basename, _ = osp.splitext(fn)
@@ -94,4 +105,4 @@ def get_video_groups(input_dir, suffixes=None,
     return group_list
 
 
-___all__ = ['get_video_groups']
+___all__ = ['get_video_filelist', 'get_video_groups']

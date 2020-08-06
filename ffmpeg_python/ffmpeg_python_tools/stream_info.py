@@ -7,11 +7,17 @@ import json
 import ffmpeg
 
 
-def get_video_stream_info(video_filename, verbose=0):
+def get_video_stream_info(video_path, verbose=False):
     """
     get video stream info.
 
-    return:
+    @params:
+        video_path: str
+            path to input video file
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         video_stream_info: dict
             a dict of video stream info, looks like:
             {
@@ -72,10 +78,10 @@ def get_video_stream_info(video_filename, verbose=0):
                 }
     """
     if verbose:
-        print('===> input video: ', video_filename)
+        print('===> input video: ', video_path)
 
     try:
-        probe = ffmpeg.probe(video_filename)
+        probe = ffmpeg.probe(video_path)
     except ffmpeg.Error as e:
         print(e.stderr, file=sys.stderr)
         sys.exit(1)

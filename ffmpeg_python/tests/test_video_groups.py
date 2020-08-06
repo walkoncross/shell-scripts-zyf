@@ -13,7 +13,7 @@ TEST_DIR = osp.dirname(__file__)
 print('===> TEST_DIR: ', TEST_DIR)
 sys.path.append(osp.dirname(TEST_DIR))
 
-from ffmpeg_python_tools import get_video_groups
+from ffmpeg_python_tools import get_video_filelist, get_video_groups
 
 
 def _make_argparser():
@@ -47,5 +47,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print('===> args: ', args)
 
-    get_video_groups(
-        args.input_dir, args.suffixes, args.delimiter, verbose=True)
+    video_filelist = get_video_filelist(args.input_dir, args.suffixes, verbose=True)
+    video_groups_list = get_video_groups(video_filelist, args.delimiter, verbose=True)

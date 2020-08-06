@@ -5,7 +5,7 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 # Initialize our own variables:
 output_file=""
-verbose=0
+verbose=False
 
 while getopts "h?vf:" opt; do
     case "$opt" in

@@ -11,12 +11,29 @@ import json
 from .trim_audio import get_audio_trim_info
 
 
-def extract_audio_into_file(video, save_dir='', ext_format='mp3',
-                            force_overwrite=False, verbose=0):
+def extract_audio_into_file(
+        video, 
+        save_dir='', 
+        ext_format='mp3',
+        force_overwrite=False, 
+        verbose=False):
     """
-    extract_audio_into_file:
+    Extract_audio_into_file:
 
-    return:
+    @params:
+        video: str
+            Paths to input video
+        save_dir: str or None
+            Path to save output stacked video files, if None, save under working dir.
+        ext_format: str
+            Extesion format for output audio file, i.e. `mp3`, `.mp3`, `wav`, `acc`.
+        force_overwrite: bool
+            If False, try to firstly load available audio file and trim info json files.
+            If True, just extract audio and calc trim_info_dict. 
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         audio_file: str,
             path of saved audio file.
     """
@@ -41,7 +58,6 @@ def extract_audio_into_file(video, save_dir='', ext_format='mp3',
         in_stream = ffmpeg.input(video)
 
         out_stream = ffmpeg.output(in_stream.audio, audio_file)
-
         if verbose:
             cmdline = ffmpeg.compile(out_stream)
             print('===> ffmpeg cmdline:', cmdline)
@@ -53,13 +69,32 @@ def extract_audio_into_file(video, save_dir='', ext_format='mp3',
     return audio_file
 
 
-def extract_audio_and_get_trim_info(video, 
-        save_dir='', ext_format='mp3', 
-        trim_min_level=0, force_overwrite=False):
+def extract_audio_and_get_trim_info(
+        video,
+        save_dir='',
+        ext_format='mp3',
+        trim_min_level=0,
+        force_overwrite=False,
+        verbose=False):
     """
     extract_audio_and_get_trim_info
 
-    return:
+    @params:
+        video: str
+            Paths to input video
+        save_dir: str or None
+            Path to save output stacked video files, if None, save under working dir.
+        ext_format: str
+            Extesion format for output audio file, i.e. `mp3`, `.mp3`, `wav`, `acc`.
+        trim_min_level: float
+            a threshold `trim_min_level` (ration to the max value of audio data)
+        force_overwrite: bool
+            If False, try to firstly load available audio file and trim info json files.
+            If True, just extract audio and calc trim_info_dict. 
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         (audio_file, trim_info_dict): a tuple
             audio_file: str
                 path of saved audio file.
@@ -83,7 +118,8 @@ def extract_audio_and_get_trim_info(video,
     force_trim = False
 
     audio_file = extract_audio_into_file(
-        video, save_dir, ext_format, force_overwrite)
+        video, save_dir, ext_format, force_overwrite,
+        verbose=verbose)
 
     if not osp.exists(audio_file) or force_overwrite:
         force_trim = True

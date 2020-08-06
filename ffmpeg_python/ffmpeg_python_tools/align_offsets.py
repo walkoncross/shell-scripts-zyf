@@ -11,11 +11,21 @@ import json
 def get_align_offsets(
         start_time1, end_time1, 
         start_time2, end_time2, 
-        verbose=0):
+        verbose=False):
     """
     Get align time offsets for two videos or audios.
 
-    return:
+    @params:
+        start_time1: float
+        end_time1: float 
+            start_time and end_time (in seconds) to trim for the first video/audio
+        start_time2: float
+        end_time2: float 
+            start_time and end_time (in seconds) to trim for the first video/audio
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         align_info_dict: dict 
             a dict of time offsets infos, in the format of:
             {

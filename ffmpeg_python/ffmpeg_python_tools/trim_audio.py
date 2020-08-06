@@ -11,11 +11,26 @@ import librosa
 import json
 
 
-def get_audio_trim_info(audio_file, trim_min_level=0, force_trim=False, verbose=0):
+def get_audio_trim_info(
+        audio_file,
+        trim_min_level=0,
+        force_trim=False,
+        verbose=False):
     """
-    Get audio trim info.
+    Get audio trim info (trim_start_time, trim_end_time) using a threshold `trim_min_level` (ration to the max value of audio data).
 
-    return:
+    @params:
+        audio_file: str
+            path of input audio file
+        trim_min_level: float
+            a threshold `trim_min_level` (ration to the max value of audio data)
+        force_trim: bool
+            If False, try to firstly load available trim info json files.
+            If True, calc trim_info_dict. 
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         trim_info_dict: dict
             a dict with trim info, with structrure like:
             trim_info_dict = {
@@ -32,7 +47,7 @@ def get_audio_trim_info(audio_file, trim_min_level=0, force_trim=False, verbose=
                 'trim_duration': trim_duration
             }
     """
-    trim_info_json = audio_file+'.trim_info.json'
+    trim_info_json = osp.splitext(audio_file)[0]+'.trim_info.json'
 
     if verbose:
         print('===> input audio file: ', audio_file)
@@ -44,7 +59,8 @@ def get_audio_trim_info(audio_file, trim_min_level=0, force_trim=False, verbose=
         try:
             fp = open(trim_info_json, 'r')
             trim_info_dict = json.load(fp)
-            print('===> trim info json already exists at {}. \nJust load'.format(trim_info_json))
+            print('===> trim info json already exists at {}. \nJust load'.format(
+                trim_info_json))
             fp.close
         except:
             print('===> Failed to load trim info from ',
@@ -80,16 +96,16 @@ def get_audio_trim_info(audio_file, trim_min_level=0, force_trim=False, verbose=
 
         for start_idx in range(audio_len):
             if abs(audio_data[start_idx]) > min_level_val:
-                if verbose==2:
+                if verbose == 2:
                     print('---> audio_data[start_idx-32:start_idx+32]:',
-                        audio_data[start_idx-32:start_idx+32])
+                          audio_data[start_idx-32:start_idx+32])
                 break
 
         for end_idx in range(audio_len-1, 0, -1):
             if abs(audio_data[end_idx]) > min_level_val:
-                if verbose==2:
+                if verbose == 2:
                     print('---> audio_data[end_idx-32:end_idx+32]:',
-                        audio_data[end_idx-32:end_idx+32])
+                          audio_data[end_idx-32:end_idx+32])
                 break
 
         duration = audio_len / sample_rate

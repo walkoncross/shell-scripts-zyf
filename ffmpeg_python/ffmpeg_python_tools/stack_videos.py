@@ -17,17 +17,37 @@ from .align_offsets import get_align_offsets
 from .utils import join_two_filenames
 
 
-def stack_two_videos(video1, video2,
+def stack_two_videos(video1,
+                     video2,
                      save_dir='./',
                      vstack=False,
                      time_offset1=0,
                      time_offset2=0,
                      time_duration=0,
-                     verbose=0):
+                     verbose=False):
     """
-    stack two videos.
+    Stack two videos.
 
-    return:
+    @params:
+        video1: str
+        video2: str
+            Paths to input videos
+        save_dir: str or None
+            Path to save output stacked video files, if None, save under working dir.
+        vstack: bool
+            If True, stack vertically, else, stack horizontally.
+        time_offset1: float
+        time_offset2: float
+            Time offsets in seconds for the input videos.
+        time_duration: float
+            Time duration for the output stacked video
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+        @return:
+            output_path: str
+                path to output video file.
+    @return:
         output_path: str
             path to output video file.
     """
@@ -117,16 +137,35 @@ def stack_two_videos(video1, video2,
 
     return output_path
 
+
 def stack_two_videos_with_trim_dicts(video1, video2,
                                      save_dir='./',
                                      vstack=False,
                                      video1_trim_info_dict=None,
                                      video2_trim_info_dict=None,
-                                     verbose=0):
+                                     verbose=False):
     """
     stack two videos and try to align their audio timeline using trim info dict.
 
-    return:
+    @params:
+        video1: str
+        video2: str
+            Paths to input videos
+        save_dir: str or None
+            Path to save output stacked video files
+        vstack: bool
+            If True, stack vertically, else, stack horizontally.
+        video1_trim_info_dict: dict
+        video2_trim_info_dict: dict
+            Trim info dicts for the input videos, dict must have two keys as follows:
+                {
+                    "trim_start_time": 0.124,   # in seconds
+                    "trim_end_time": 22.274,    # in seconds
+                }
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         output_path: str
             path to output video file.
     """
@@ -150,26 +189,44 @@ def stack_two_videos_with_trim_dicts(video1, video2,
     fp.close()
 
     output_path = stack_two_videos(video1, video2,
-                                save_dir,
-                                vstack,
-                                align_info_dict['time_offset1'],
-                                align_info_dict['time_offset1'],
-                                align_info_dict['time_duration'],
-                                verbose=verbose)
+                                   save_dir,
+                                   vstack,
+                                   align_info_dict['time_offset1'],
+                                   align_info_dict['time_offset1'],
+                                   align_info_dict['time_duration'],
+                                   verbose=verbose)
 
-return output_path
+    return output_path
 
 
 def stack_two_videos_with_trim_files(video1, video2,
-                                save_dir='./',
-                                vstack=False,
-                                trim_info_file1=None,
-                                trim_info_file2=None,
-                                verbose=0):
+                                     save_dir='./',
+                                     vstack=False,
+                                     trim_json_file1=None,
+                                     trim_json_file2=None,
+                                     verbose=False):
     """
-    stack two videos and try to align their audio timeline using trim files.
+    Stack two videos and try to align their audio timeline using trim json files.
 
-    return:
+    @params:
+        video1: str
+        video2: str
+            Paths to input videos
+        save_dir: str or None
+            Path to save output stacked video files
+        vstack: bool
+            If True, stack vertically, else, stack horizontally.
+        trim_json_file1: str
+        trim_json_file2: str
+            Paths of trim info json files for the input videos, the json contents must have two keys as follows:
+                {
+                    "trim_start_time": 0.124,   # in seconds
+                    "trim_end_time": 22.274,    # in seconds
+                }
+        verbose: bool
+            Print verbose information, mainly for debug.
+
+    @return:
         output_path: str
             path to output video file.
     """
@@ -179,32 +236,32 @@ def stack_two_videos_with_trim_files(video1, video2,
     if not osp.isdir(save_dir):
         os.makedirs(save_dir)
 
-    if not trim_info_file1:
-        trim_info_file1 = osp.splitext(video1)[0] + '.trim_info.json'
+    if not trim_json_file1:
+        trim_json_file1 = osp.splitext(video1)[0] + '.trim_info.json'
 
-    if not trim_info_file2:
-        trim_info_file2 = osp.splitext(video2)[0] + '.trim_info.json'
+    if not trim_json_file2:
+        trim_json_file2 = osp.splitext(video2)[0] + '.trim_info.json'
 
-    if osp.isfile(trim_info_file1) and osp.isfile(trim_info_file1):
+    if osp.isfile(trim_json_file1) and osp.isfile(trim_json_file1):
         if verbose:
-            print('===> load trim info from: ', trim_info_file1)
+            print('===> load trim info from: ', trim_json_file1)
 
-        fp = open(trim_info_file1, 'r')
+        fp = open(trim_json_file1, 'r')
         video1_trim_info_dict = json.load(fp)
         fp.close()
 
         if verbose:
-            print('===> load trim info from: ', trim_info_file2)
+            print('===> load trim info from: ', trim_json_file2)
 
-        fp = open(trim_info_file2, 'r')
+        fp = open(trim_json_file2, 'r')
         video2_trim_info_dict = json.load(fp)
         fp.close()
         output_path = stack_two_videos_with_trim_dicts(video1, video2,
-                                            save_dir,
-                                            vstack,
-                                            video1_trim_info_dict=video1_trim_info_dict,
-                                            video2_trim_info_dict=video1_trim_info_dict,
-                                            verbose=verbose):
+                                                       save_dir,
+                                                       vstack,
+                                                       video1_trim_info_dict=video1_trim_info_dict,
+                                                       video2_trim_info_dict=video2_trim_info_dict,
+                                                       verbose=verbose)
 
     else:
         output_path = stack_two_videos(video1, video2,
@@ -215,4 +272,7 @@ def stack_two_videos_with_trim_files(video1, video2,
     return output_path
 
 
-__all__ = ['stack_two_videos', 'stack_two_videos_with_trim_dicts', 'stack_two_videos_with_trim_files']
+__all__ = ['stack_two_videos',
+           'stack_two_videos_with_trim_dicts',
+           'stack_two_videos_with_trim_files'
+           ]
