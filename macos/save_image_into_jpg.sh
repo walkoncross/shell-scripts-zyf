@@ -2,4 +2,16 @@
 ## author: zhaoyafei0210@gmail.com
 
 
-sips -s format jpeg $1 --out $1'.jpg' 
+input=$1
+output="${input%%.*}.jpg"
+
+if [[ $# -gt 1 ]]; then
+if [[ -d $2 ]]; then
+        base=`basename $output`
+        output="$2/$base"
+else
+        output=$2
+fi
+fi
+
+sips -s format jpeg $input 1 --out $output
