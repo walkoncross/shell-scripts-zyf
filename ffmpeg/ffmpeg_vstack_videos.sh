@@ -57,14 +57,14 @@ wd2=${resolution2%%x*}
 if [[ $wd1 == $wd2 ]]; then
 echo "---> The two videos have the same width, just stack them"
 
-ffmpeg -i $1 -i $2 -filter_complex vstack ${output_video}
+ffmpeg -i $1 -i $2 -filter_complex '[0:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v0_crop]; [1:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v1_crop]; [v0_crop][v1_crop] vstack' ${output_video}
 else
 echo "---> The two videos have the different width, resize the second one and then stack them"
 	
 # #w=-2, refer to: https://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2
 	
 ffmpeg -i $1 -i $2 	\
-	-filter_complex '[1:v][0:v] scale2ref=w=iw:h=-2 [bottomvid][topvid]; [topvid][bottomvid] vstack [outvid]' \
+	-filter_complex '[0:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v0_crop]; [1:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v1_crop]; [v1_crop][v0_crop] scale2ref=w=-2:h=ih [rightvid][leftvid]; [leftvid][rightvid] vstack [outvid]' \
 	-map '[outvid]' \
 	-map 0:a \
 	${output_video}
