@@ -103,6 +103,17 @@ def stack_two_videos(video1,
     video2 = in_stream2.video
     # audio2 = in_stream2.audio
 
+    # use crop filter to deal with width/height not divisible by 2
+    if (width1 & 1) or (height1 & 1):
+        width1 = (width1 >> 1) << 1
+        height1 = (height1 >> 1) << 1
+        video1 = ffmpeg.crop(video1, x=0, y=0, width=width1, height=height1)
+
+    if (width2 & 1) or (height2 & 1):
+        width2 = (width2 >> 1) << 1
+        height2 = (height2 >> 1) << 1
+        video2 = ffmpeg.crop(video2, x=0, y=0,  width=width2, height=height2)
+
     if vstack:
         if width1 == width2:
             print(
