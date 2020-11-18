@@ -26,7 +26,7 @@ if [[ $# -gt 2 ]]; then
 output=$3
 else
 basename=${input##*/}
-output=${basename%%.*}.x265-anim.mp4
+output=${basename%%.*}.x265-fast-anim.mp4
 fi
 
 # Reference: https://trac.ffmpeg.org/wiki/Encode/H.265
