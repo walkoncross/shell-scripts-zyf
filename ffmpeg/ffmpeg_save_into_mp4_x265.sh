@@ -22,8 +22,8 @@ fi
 input=$1
 offset=$2 # time offset in seconds, e.g. 0.1 makes audio delay for 100ms, -0.1 makes audio 
 
-if [[ $# -gt 2 ]]; then
-output=$3
+if [[ $# -gt 1 ]]; then
+output=$2
 else
 basename=${input##*/}
 output=${basename%%.*}.x265.mp4
