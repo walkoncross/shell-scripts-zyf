@@ -40,4 +40,4 @@ echo "save dir: ${save_dir}"
 
 mkdir -p ${save_dir}
 
-ffmpeg -i ${input} -vf trim=start=${start}:end=${end} ${save_dir}/frame_%03d.jpg
+ffmpeg -hide_banner -i ${input} -vf trim=start=${start}:end=${end} ${save_dir}/frame_%03d.jpg

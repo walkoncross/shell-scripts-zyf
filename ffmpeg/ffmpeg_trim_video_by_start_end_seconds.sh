@@ -39,5 +39,5 @@ echo "end time: ${end}"
 echo "save name: ${save_name}"
 
 # "-vf" command seems a litte faster then "-ss -to" command
-time ffmpeg -i ${input} -vf trim=start=${start}:end=${end},setpts ${save_name}
+time ffmpeg -hide_banner -i ${input} -vf trim=start=${start}:end=${end},setpts ${save_name}
 # time ffmpeg -ss ${start} -to ${end} -i ${input} ${save_name}.mp4

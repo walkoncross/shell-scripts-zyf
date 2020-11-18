@@ -51,7 +51,7 @@ fi
     # psnr – ignore this as it is only used for codec development
     # ssim – ignore this as it is only used for codec development
 
-# ffmpeg -i $input -pix_fmt yuv420p -vcodec libx264 -preset fast -tune animation $output
-ffmpeg -i $input -pix_fmt yuv420p -vcodec libx264 -tune animation $output
+# ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx264 -preset fast -tune animation $output
+ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx264 -tune animation $output
 
 echo 'saved into '${output}

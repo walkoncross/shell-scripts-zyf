@@ -30,4 +30,4 @@ else
 output=${input%%.*}_offset_$offset.mp4
 fi
 
-ffmpeg -i $input -itsoffset $offset -i $input -vcodec copy -acodec copy -map 0:0 -map 1:1 $output
+ffmpeg -hide_banner -i $input -itsoffset $offset -i $input -vcodec copy -acodec copy -map 0:0 -map 1:1 $output

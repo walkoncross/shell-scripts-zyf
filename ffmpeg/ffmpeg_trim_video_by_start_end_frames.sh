@@ -38,4 +38,4 @@ echo "start frame: ${start}"
 echo "end frame: ${end}"
 echo "save name: ${save_name}"
 
-ffmpeg -i ${input} -vf trim=start_frame=${start}:end_frame=${end},setpts ${save_name}
+ffmpeg -hide_banner -i ${input} -vf trim=start_frame=${start}:end_frame=${end},setpts ${save_name}

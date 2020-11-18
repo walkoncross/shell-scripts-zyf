@@ -27,4 +27,4 @@ basename=$(basename $1)
 output_audio=${basename%%.*}'.wav'
 
 echo "===> The output audio will be saved into: ${output_audio}"
-ffmpeg -i $1 -vn ${output_audio}
+ffmpeg -hide_banner -i $1 -vn ${output_audio}

@@ -43,8 +43,8 @@ echo "save dir: ${save_dir}"
 
 mkdir -p ${save_dir}
 
-# time ffmpeg -i ${input} -filter:v ex_fps=ex_fps=${ex_fps}:start_time=0 ${save_dir}/frame_%0d.jpg
+# time ffmpeg -hide_banner -i ${input} -filter:v ex_fps=ex_fps=${ex_fps}:start_time=0 ${save_dir}/frame_%0d.jpg
 # time for i in {0..5} ; do ffmpeg -accurate_seek -ss `echo $i/${fps} | bc` -i ${input} -frames:v 1 ${name}_frame_$i.jpg; done
 # time ffmpeg -accurate_seek -ss 0 -i ${input} -frames:v 1  ${save_dir}/frame_0.jpg
-time ffmpeg -i ${input} -r ${ex_fps} -f image2 ${save_dir}/frame_%0d.jpg
+time ffmpeg -hide_banner -i ${input} -r ${ex_fps} -f image2 ${save_dir}/frame_%0d.jpg
 

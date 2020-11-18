@@ -49,8 +49,8 @@ fi
     # psnr – ignore this as it is only used for codec development
     # ssim – ignore this as it is only used for codec development
 
-# ffmpeg -i $input -pix_fmt yuv420p -vcodec libx265 -preset fast -tune film $output
-# ffmpeg -i $input -pix_fmt yuv420p -vcodec libx265 -tune film $output
-ffmpeg -i $input -pix_fmt yuv420p -vcodec libx265 $output
+# ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx265 -preset fast -tune film $output
+# ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx265 -tune film $output
+ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx265 $output
 
 echo 'saved into '${output}
