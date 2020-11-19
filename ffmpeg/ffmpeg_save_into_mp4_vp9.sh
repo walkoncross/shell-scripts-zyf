@@ -29,28 +29,8 @@ basename=${input##*/}
 output=${basename%%.*}.vp9.mp4
 fi
 
-# Reference: https://trac.ffmpeg.org/wiki/Encode/H.265
-# -preset:
-    # ultrafast
-    # superfast
-    # veryfast
-    # faster
-    # fast
-    # medium – default preset
-    # slow
-    # slower
-    # veryslow
-    # placebo – ignore this as it is not useful (see FAQ)
-# -tune:
-    # animation – good for cartoons; uses higher deblocking and more reference frames
-    # grain – preserves the grain structure in old, grainy film material
-    # fastdecode – allows faster decoding by disabling certain filters
-    # zerolatency – good for fast encoding and low-latency streaming
-    # psnr – ignore this as it is only used for codec development
-    # ssim – ignore this as it is only used for codec development
-
-# ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libvpx-vp9 -preset fast -tune film $output
-# ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libvpx-vp9 -tune film $output
+# Reference: 
+#   https://trac.ffmpeg.org/wiki/Encode/VP9
 ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libvpx-vp9 $output
 
 echo 'saved into '${output}
