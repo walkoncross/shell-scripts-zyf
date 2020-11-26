@@ -49,8 +49,8 @@ fi
     # psnr – ignore this as it is only used for codec development
     # ssim – ignore this as it is only used for codec development
 
-# ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx265 -preset fast -tune animation $output
-# ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx265 -tune animation $output
-ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libx265 -tune animation $output
+# ffmpeg -hide_banner -i $input -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2"  -pix_fmt yuv420p -vcodec libx265 -preset fast -tune animation $output
+# ffmpeg -hide_banner -i $input -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2"  -pix_fmt yuv420p -vcodec libx265 -tune animation $output
+ffmpeg -hide_banner -i $input -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2"  -pix_fmt yuv420p -vcodec libx265 -tune animation $output
 
 echo 'saved into '${output}

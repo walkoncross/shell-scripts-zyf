@@ -47,6 +47,7 @@ fi
 # FFV1 version 3
 ffmpeg -hide_banner     \
     -i        $input    \
+    -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
     -pix_fmt  yuv420p   \
     -acodec   copy      \
     -vcodec   ffv1      \

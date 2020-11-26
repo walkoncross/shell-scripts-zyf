@@ -31,6 +31,6 @@ fi
 
 # Reference: 
 #   https://trac.ffmpeg.org/wiki/Encode/VP9
-ffmpeg -hide_banner -i $input -pix_fmt yuv420p -vcodec libvpx-vp9 $output
+ffmpeg -hide_banner -i $input -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2"  -pix_fmt yuv420p -vcodec libvpx-vp9 $output
 
 echo 'saved into '${output}

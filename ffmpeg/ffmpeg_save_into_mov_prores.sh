@@ -29,7 +29,7 @@ basename=${input##*/}
 output=${basename%%.*}.prores.mov
 fi
 
-# ffmpeg -hide_banner -i $input -pix_fmt yuv422p10le -vcodec prores $output
-ffmpeg -hide_banner -i $input -vcodec prores $output
+# ffmpeg -hide_banner -i $input -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -pix_fmt yuv422p10le -vcodec prores $output
+ffmpeg -hide_banner -i $input -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -vcodec prores $output
 
 echo 'saved into '${output}
