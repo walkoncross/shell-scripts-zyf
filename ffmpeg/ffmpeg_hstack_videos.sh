@@ -56,15 +56,29 @@ ht2=${resolution2##*x}
 
 if [[ $ht1 == $ht2 ]]; then
 	echo "---> The two videos have the same height, just stack them"
-	ffmpeg -hide_banner -i $1 -i $2 -filter_complex '[0:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v0_crop]; [1:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v1_crop]; [v0_crop][v1_crop] hstack' ${output_video}
+	ffmpeg -hide_banner \
+		-i $1 			\
+		-i $2 			\
+		-filter_complex '
+			[0:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v0_crop];
+			[1:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v1_crop];
+			[v0_crop][v1_crop] hstack
+			' \
+		${output_video}
 else
 	echo "---> The two videos have the different height, resize the second one and then stack them"
 	# #w=-2, refer to: https://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2
-	ffmpeg -hide_banner -i $1 -i $2 	\
-		-filter_complex '[0:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v0_crop]; [1:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v1_crop]; [v1_crop][v0_crop] scale2ref=w=-2:h=ih [rightvid][leftvid]; [leftvid][rightvid] hstack [outvid]' \
+	ffmpeg -hide_banner \
+		-i $1 			\
+		-i $2 			\
+		-filter_complex '
+			[0:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v0_crop];
+			[1:v] crop=h=(ih/2)*2:w=(iw/2)*2 [v1_crop];
+			[v1_crop][v0_crop] scale2ref=w=trunc(oh*mdar/2)*2:h=ih [rightvid][leftvid];
+			[leftvid][rightvid] hstack [outvid]
+			' \
 		-map '[outvid]' \
-		-map 0:a \
-		-vf "pad=ceil(iw/2)*2:ceil(ih/2)*2"
+		-map 0:a 		\
 		${output_video}
 fi
 
