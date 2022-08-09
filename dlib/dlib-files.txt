@@ -1,0 +1,6 @@
+http://dlib.net/files/dlib-19.2.tar.bz2  
+http://dlib.net/files/imagenet2015_validation_images.txt.bz2
+http://dlib.net/files/mmod_dog_hipsterizer.dat.bz2
+http://dlib.net/files/mmod_human_face_detector.dat.bz2
+http://dlib.net/files/resnet34_1000_imagenet_classifier.dnn.bz2
+http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
