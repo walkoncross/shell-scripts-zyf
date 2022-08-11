@@ -4,10 +4,10 @@
 
 dir=$1
 
-for input in `ls ${dir}/*.HEIC`; do
+for input in `ls ${dir}/*.HEIC ${dir}/*.heic`; do
 
 echo ${input}
-output="${input%.*}.jpg"
+output="${input%.*}.jpeg"
 
 if [[ $# -gt 1 ]]; then
 if [[ -d $2 ]]; then

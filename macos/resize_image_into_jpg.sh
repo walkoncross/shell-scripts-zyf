@@ -5,7 +5,7 @@
 input=$1
 #max_size=$2
 max_size=1000
-output="${input%.*}.jpg"
+output="${input%.*}.jpeg"
 
 if [[ $# -gt 1 ]]; then
 if [[ -d $3 ]]; then

@@ -7,9 +7,10 @@ dir=$1
 shopt -s nocaseglob
 
 #for input in `ls ${dir}/*.png`; do
-for input in `ls ${dir}/*.PNG`; do
+#for input in `ls ${dir}/*.{png, png}`; do
+for input in `ls ${dir}/*.png ${dir}/*.PNG`; do
 
-        output="${input%.*}.jpg"
+        output="${input%.*}.jpeg"
         echo $output
 
         if [[ $# -gt 1 ]]; then

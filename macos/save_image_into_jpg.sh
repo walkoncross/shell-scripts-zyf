@@ -3,7 +3,7 @@
 
 
 input=$1
-output="${input%%.*}.jpg"
+output="${input%%.*}.jpeg"
 
 if [[ $# -gt 1 ]]; then
 if [[ -d $2 ]]; then

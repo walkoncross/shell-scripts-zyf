@@ -4,9 +4,9 @@
 
 dir=$1
 
-for input in `ls ${dir}/*.bmp`; do
+for input in `ls ${dir}/*.bmp ${dir}/*.BMP`; do
 
-output="${input%.*}.jpg"
+output="${input%.*}.jpeg"
 
 if [[ $# -gt 1 ]]; then
 if [[ -d $2 ]]; then
