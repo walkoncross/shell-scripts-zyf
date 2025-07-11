@@ -20,6 +20,8 @@
 
 
 rsync --progress -a \
+  --timeout=300 \
+  --inplace --partial \
   --include='*/' \
   --include='*/*' \
   --exclude='*/.*' \

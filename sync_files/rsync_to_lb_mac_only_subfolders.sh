@@ -13,6 +13,7 @@
 
 
 rsync --progress -a \
+  --inplace --partial \
   --include='*/' \
   --include='*/*' \
   --exclude='*/.*' \
