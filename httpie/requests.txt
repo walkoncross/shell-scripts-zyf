@@ -1,0 +1,11 @@
+POST /api/games HTTP/1.1
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 52
+User-Agent: HTTPie/3.2.3
+Accept: application/json, */*;q=0.5
+Content-Type: application/json
+API-Key: ZZZ
+Host: server.chess
+
+{"w": "magnus", "b": "hikaru", "t": "180", "i": "2"}

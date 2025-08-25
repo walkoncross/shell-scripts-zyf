@@ -1,0 +1,13 @@
+{
+  "audio_file": "stacked_videos/0.mp3",
+  "sample_rate": 22050,
+  "audo_len": 530496,
+  "duration": 24.058775510204082,
+  "max_val": 0.6489371061325073,
+  "trim_min_level": 0,
+  "trim_start_idx": 2738,
+  "trim_end_idx": 491158,
+  "trim_start_time": 0.12417233560090703,
+  "trim_end_time": 22.274739229024945,
+  "trim_duration": 22.15056689342404
+}
