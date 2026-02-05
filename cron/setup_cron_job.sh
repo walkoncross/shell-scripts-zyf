@@ -19,7 +19,7 @@ if [ ! -x "$SYNC_SCRIPT_PATH" ]; then
 fi
 
 # 定义要添加的cron任务
-CRON_JOB="0 * * * * $SYNC_SCRIPT_PATH"
+CRON_JOB="0 40/30 * * * $SYNC_SCRIPT_PATH"
 
 # 检查该任务是否已存在于crontab中
 if crontab -l 2>/dev/null | grep -qF "$CRON_JOB"; then
