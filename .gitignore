@@ -27,3 +27,9 @@
 
 # Ignore cache files
 *.cache
+
+# coding prompts
+.prompts/
+
+# ossutil
+ossutil_output/
