@@ -1,6 +1,6 @@
 #!/bin/bash
 # conda 换源脚本
-# 用法: ./conda_change_source.sh [tuna|ustc|aliyun|restore]
+# 用法: ./switch_conda_source.sh [tuna|ustc|aliyun|restore]
 # 默认使用 aliyun 源；restore 恢复官方源
 
 MIRROR="${1:-aliyun}"

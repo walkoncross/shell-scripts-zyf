@@ -2,19 +2,19 @@
 
 ## 脚本说明
 
-### brew_change_source.sh — 换源 / 恢复官方源
+### switch_brew_source.sh — 换源 / 恢复官方源
 
 ```bash
-# 默认使用 ustc 源
-./brew_change_source.sh
+# 默认使用 aliyun 源
+./switch_brew_source.sh
 
 # 指定镜像源（tuna / ustc / aliyun）
-./brew_change_source.sh --mirror tuna
-./brew_change_source.sh --mirror ustc
-./brew_change_source.sh --mirror aliyun
+./switch_brew_source.sh tuna
+./switch_brew_source.sh ustc
+./switch_brew_source.sh aliyun
 
 # 恢复官方源
-./brew_change_source.sh --mirror restore
+./switch_brew_source.sh restore
 ```
 
 | 镜像 | brew.git | Bottles |
