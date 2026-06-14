@@ -20,6 +20,10 @@ else
 fi
 
 echo "发行版: $DISTRO $CODENAME"
+echo ""
+echo "当前 apt 源文件："
+grep -v '^#' "$SOURCES_LIST" 2>/dev/null | grep -v '^$' || echo "无法读取 $SOURCES_LIST"
+echo ""
 
 # 根据镜像选择地址
 case "$MIRROR" in
@@ -43,6 +47,8 @@ case "$MIRROR" in
             exit 1
         fi
         sudo apt-get update
+        echo "验证当前 apt 源文件："
+        head "$SOURCES_LIST"
         exit 0
         ;;
     *)
@@ -82,3 +88,5 @@ fi
 
 echo "已更新 $SOURCES_LIST"
 sudo apt-get update
+echo "验证当前 apt 源文件："
+head "$SOURCES_LIST"

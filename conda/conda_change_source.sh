@@ -5,6 +5,10 @@
 
 MIRROR="${1:-aliyun}"
 
+echo "当前 conda 配置："
+conda config --show channels 2>/dev/null || echo "暂无 conda 配置"
+echo ""
+
 # 根据镜像选择地址
 case "$MIRROR" in
     tuna)

@@ -20,6 +20,10 @@ else
 fi
 
 echo "发行版: $DISTRO $VERSION_ID"
+echo ""
+echo "当前 yum 源文件："
+ls "$REPO_DIR"/*.repo 2>/dev/null | while read f; do echo "  $f"; head -3 "$f" 2>/dev/null | grep -E '^(name|baseurl|mirrorlist)' | sed 's/^/    /'; done
+echo ""
 
 # 根据镜像选择地址
 case "$MIRROR" in
@@ -43,6 +47,8 @@ case "$MIRROR" in
             exit 1
         fi
         sudo yum makecache
+        echo "验证 yum 仓库列表："
+        yum repolist
         exit 0
         ;;
     *)
@@ -147,3 +153,5 @@ esac
 
 echo "已更新 $REPO_DIR"
 sudo yum makecache
+echo "验证 yum 仓库列表："
+yum repolist
