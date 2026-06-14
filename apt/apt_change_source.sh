@@ -1,27 +1,13 @@
 #!/bin/bash
 # apt 换源脚本（适用于 Ubuntu/Debian）
-# 用法: ./apt_change_source.sh [--mirror <tuna|ustc|aliyun|restore>]
-# 默认使用 tuna 源；--mirror restore 恢复官方源
+# 用法: ./apt_change_source.sh [tuna|ustc|aliyun|restore]
+# 默认使用 aliyun 源；restore 恢复官方源
 # 需要 sudo 权限
 
 SOURCES_LIST="/etc/apt/sources.list"
 BACKUP="$SOURCES_LIST.bak"
 
-# 解析参数
-MIRROR="tuna"
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --mirror)
-            MIRROR="$2"
-            shift 2
-            ;;
-        *)
-            echo "未知参数: $1"
-            echo "用法: $0 [--mirror <tuna|ustc|aliyun|restore>]"
-            exit 1
-            ;;
-    esac
-done
+MIRROR="${1:-aliyun}"
 
 # 检测发行版和 codename
 if [[ -f /etc/os-release ]]; then

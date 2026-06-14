@@ -1,27 +1,13 @@
 #!/bin/bash
 # yum 换源脚本（适用于 CentOS/RHEL/Fedora）
-# 用法: ./yum_change_source.sh [--mirror <tuna|ustc|aliyun|restore>]
-# 默认使用 aliyun 源；--mirror restore 恢复官方源
+# 用法: ./yum_change_source.sh [tuna|ustc|aliyun|restore]
+# 默认使用 aliyun 源；restore 恢复官方源
 # 需要 sudo 权限
 
 REPO_DIR="/etc/yum.repos.d"
 BACKUP_DIR="$REPO_DIR/backup"
 
-# 解析参数
-MIRROR="aliyun"
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --mirror)
-            MIRROR="$2"
-            shift 2
-            ;;
-        *)
-            echo "未知参数: $1"
-            echo "用法: $0 [--mirror <tuna|ustc|aliyun|restore>]"
-            exit 1
-            ;;
-    esac
-done
+MIRROR="${1:-aliyun}"
 
 # 检测发行版
 if [[ -f /etc/os-release ]]; then

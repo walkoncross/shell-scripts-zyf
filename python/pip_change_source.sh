@@ -1,23 +1,9 @@
 #!/bin/bash
 # pip 换源脚本
-# 用法: ./pip_change_source.sh [--mirror <tuna|ustc|aliyun|douban|restore>]
-# 默认使用 aliyun 源；--mirror restore 恢复官方源
+# 用法: ./pip_change_source.sh [tuna|ustc|aliyun|douban|restore]
+# 默认使用 aliyun 源；restore 恢复官方源
 
-# 解析参数
-MIRROR="aliyun"
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --mirror)
-            MIRROR="$2"
-            shift 2
-            ;;
-        *)
-            echo "未知参数: $1"
-            echo "用法: $0 [--mirror <tuna|ustc|aliyun|douban|restore>]"
-            exit 1
-            ;;
-    esac
-done
+MIRROR="${1:-aliyun}"
 
 # 根据镜像选择地址
 case "$MIRROR" in

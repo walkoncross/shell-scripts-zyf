@@ -1,23 +1,9 @@
 #!/bin/bash
 # Homebrew 换源脚本
-# 用法: ./brew_change_source.sh [--mirror <tuna|ustc|aliyun|restore>]
-# 默认使用 ustc 源；--mirror restore 恢复官方源
+# 用法: ./brew_change_source.sh [tuna|ustc|aliyun|restore]
+# 默认使用 aliyun 源；restore 恢复官方源
 
-# 解析参数
-MIRROR="ustc"
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --mirror)
-            MIRROR="$2"
-            shift 2
-            ;;
-        *)
-            echo "未知参数: $1"
-            echo "用法: $0 [--mirror <tuna|ustc|aliyun|restore>]"
-            exit 1
-            ;;
-    esac
-done
+MIRROR="${1:-aliyun}"
 
 # 根据镜像选择地址
 case "$MIRROR" in
