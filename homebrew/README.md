@@ -1,11 +1,46 @@
-# Homebrew安装和操作相关tips
+# Homebrew 安装和操作相关 tips
 
-## 国内Homebrew镜像源加速
+## 脚本说明
 
-### 清华大学镜像
-https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/
+### brew_change_source.sh — 换源 / 恢复官方源
 
-#### 替换现有仓库的上游
+```bash
+# 默认使用 ustc 源
+./brew_change_source.sh
+
+# 指定镜像源（tuna / ustc / aliyun）
+./brew_change_source.sh --mirror tuna
+./brew_change_source.sh --mirror ustc
+./brew_change_source.sh --mirror aliyun
+
+# 恢复官方源
+./brew_change_source.sh --mirror restore
+```
+
+| 镜像 | brew.git | Bottles |
+|------|----------|---------|
+| tuna | mirrors.tuna.tsinghua.edu.cn | mirrors.tuna.tsinghua.edu.cn/homebrew-bottles |
+| ustc | mirrors.ustc.edu.cn | mirrors.ustc.edu.cn/homebrew-bottles |
+| aliyun | mirrors.aliyun.com | mirrors.aliyun.com/homebrew/homebrew-bottles |
+
+### brew_list_show_size.sh — 列出已安装包及占用大小
+
+```bash
+./brew_list_show_size.sh
+```
+
+### brew_list_show_size_sorted.sh — 列出已安装包并按大小排序
+
+```bash
+./brew_list_show_size_sorted.sh
+```
+
+---
+
+## 参考：手动换源（清华镜像）
+
+官方文档：https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/
+
 ```bash
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 for tap in core cask command-not-found; do
@@ -13,15 +48,3 @@ for tap in core cask command-not-found; do
 done
 brew update
 ```
-
-#### 设置环境变量
-```bash
-test -r ~/.bash_profile && echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"' >> ~/.bash_profile  # bash
-test -r ~/.bash_profile && echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"' >> ~/.bash_profile
-test -r ~/.profile && echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"' >> ~/.profile
-test -r ~/.profile && echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"' >> ~/.profile
-
-test -r ~/.zprofile && echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"' >> ~/.zprofile  # zsh
-test -r ~/.zprofile && echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"' >> ~/.zprofile
-```
-
