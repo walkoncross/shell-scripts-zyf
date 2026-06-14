@@ -1,6 +1,6 @@
 #!/bin/bash
 # apt 换源脚本（适用于 Ubuntu/Debian）
-# 用法: ./switch_apt_source.sh [tuna|ustc|aliyun|restore]
+# 用法: ./switch_apt_mirror.sh [tuna|ustc|aliyun|restore]
 # 默认使用 aliyun 源；restore 恢复官方源
 # 需要 sudo 权限
 

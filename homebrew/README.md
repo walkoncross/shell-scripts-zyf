@@ -2,19 +2,19 @@
 
 ## 脚本说明
 
-### switch_brew_source.sh — 换源 / 恢复官方源
+### switch_brew_mirror.sh — 换源 / 恢复官方源
 
 ```bash
 # 默认使用 aliyun 源
-./switch_brew_source.sh
+./switch_brew_mirror.sh
 
 # 指定镜像源（tuna / ustc / aliyun）
-./switch_brew_source.sh tuna
-./switch_brew_source.sh ustc
-./switch_brew_source.sh aliyun
+./switch_brew_mirror.sh tuna
+./switch_brew_mirror.sh ustc
+./switch_brew_mirror.sh aliyun
 
 # 恢复官方源
-./switch_brew_source.sh restore
+./switch_brew_mirror.sh restore
 ```
 
 | 镜像 | brew.git | Bottles |

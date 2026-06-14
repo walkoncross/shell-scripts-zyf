@@ -1,6 +1,6 @@
 #!/bin/bash
 # pip 换源脚本
-# 用法: ./switch_pip_source.sh [tuna|ustc|aliyun|douban|restore]
+# 用法: ./switch_pip_mirror.sh [tuna|ustc|aliyun|douban|restore]
 # 默认使用 aliyun 源；restore 恢复官方源
 
 MIRROR="${1:-aliyun}"

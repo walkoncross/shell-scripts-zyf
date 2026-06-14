@@ -1,6 +1,6 @@
 #!/bin/bash
 # yum 换源脚本（适用于 CentOS/RHEL/Fedora）
-# 用法: ./switch_yum_source.sh [tuna|ustc|aliyun|restore]
+# 用法: ./switch_yum_mirror.sh [tuna|ustc|aliyun|restore]
 # 默认使用 aliyun 源；restore 恢复官方源
 # 需要 sudo 权限
 
