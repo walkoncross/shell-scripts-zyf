@@ -34,7 +34,7 @@ case "$MIRROR" in
         git -C "$(brew --repo)" remote set-url origin https://github.com/Homebrew/brew.git
         # git -C "$(brew --repo homebrew/core)" remote set-url origin https://github.com/Homebrew/homebrew-core.git
         # git -C "$(brew --repo homebrew/cask)" remote set-url origin https://github.com/Homebrew/homebrew-cask.git
-        echo "已恢复官方源，请手动删除 ~/.zshrc 中的 HOMEBREW_NO_AUTO_UPDATE 和 HOMEBREW_BOTTLE_DOMAIN 配置"
+        echo "已恢复官方源，建议删除 ~/.zshrc 中的 HOMEBREW_BOTTLE_DOMAIN 和 HOMEBREW_NO_AUTO_UPDATE 配置"
         echo "验证当前 Homebrew 远程地址："
         git -C "$(brew --repo)" remote get-url origin
         exit 0
@@ -48,24 +48,15 @@ esac
 
 echo "使用镜像源: $MIRROR"
 
-# 1. 禁用自动更新
-echo 'export HOMEBREW_NO_AUTO_UPDATE=1' >> ~/.zshrc
-
-# 2. 替换所有核心镜像
+# 替换 Homebrew 仓库远程地址
 git -C "$(brew --repo)" remote set-url origin "$BREW_GIT"
 # git -C "$(brew --repo homebrew/core)" remote set-url origin "$CORE_GIT"
 # git -C "$(brew --repo homebrew/cask)" remote set-url origin "$CASK_GIT"
 
-# 3. 启用国内二进制包源
-echo "export HOMEBREW_BOTTLE_DOMAIN=$BOTTLE" >> ~/.zshrc
-
-# 4. 修复 services 仓库，该仓库已经废弃
-# cd /opt/homebrew/Library/Taps/homebrew/homebrew-services
-# git remote add origin https://github.com/Homebrew/homebrew-services.git
-# git fetch origin && git reset --hard origin/main
-
-# 5. 生效配置
-echo "配置已写入 ~/.zshrc，请执行 source ~/.zshrc 使其生效"
+echo ""
+echo "如需加速 bottle 下载，请在 ~/.zshrc 中添加："
+echo "  export HOMEBREW_BOTTLE_DOMAIN=$BOTTLE"
+echo "  export HOMEBREW_NO_AUTO_UPDATE=1"
 echo ""
 echo "验证当前 Homebrew 远程地址："
 git -C "$(brew --repo)" remote get-url origin
