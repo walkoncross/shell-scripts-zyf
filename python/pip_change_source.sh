@@ -1,7 +1,7 @@
 #!/bin/bash
 # pip 换源脚本
-# 用法: ./set_pip_mirror.sh [--mirror <tuna|ustc|aliyun|douban>]
-# 默认使用 aliyun 源
+# 用法: ./pip_change_source.sh [--mirror <tuna|ustc|aliyun|douban|restore>]
+# 默认使用 aliyun 源；--mirror restore 恢复官方源
 
 # 解析参数
 MIRROR="aliyun"
@@ -13,7 +13,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "未知参数: $1"
-            echo "用法: $0 [--mirror <tuna|ustc|aliyun|douban>]"
+            echo "用法: $0 [--mirror <tuna|ustc|aliyun|douban|restore>]"
             exit 1
             ;;
     esac
@@ -33,9 +33,16 @@ case "$MIRROR" in
     douban)
         MIRROR_URL="https://pypi.douban.com/simple/"
         ;;
+    restore)
+        echo "恢复 pip 官方源..."
+        pip config unset global.index-url 2>/dev/null || true
+        pip3 config unset global.index-url 2>/dev/null || true
+        echo "已恢复官方源"
+        exit 0
+        ;;
     *)
         echo "不支持的镜像源: $MIRROR"
-        echo "可选值: tuna, ustc, aliyun, douban"
+        echo "可选值: tuna, ustc, aliyun, douban, restore"
         exit 1
         ;;
 esac

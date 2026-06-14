@@ -38,4 +38,4 @@ ossutil_output/
 Users-admin-work-folders*
 
 # local copies
-sync_git_folders-zyf.sh
+sync_git_folders-zyf*

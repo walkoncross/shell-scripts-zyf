@@ -1,7 +1,7 @@
 #!/bin/bash
-# Homebrew 换源加速脚本
-# 用法: ./brew_speedup.sh [--mirror <tuna|ustc|aliyun>]
-# 默认使用 ustc 源
+# Homebrew 换源脚本
+# 用法: ./brew_change_source.sh [--mirror <tuna|ustc|aliyun|restore>]
+# 默认使用 ustc 源；--mirror restore 恢复官方源
 
 # 解析参数
 MIRROR="ustc"
@@ -13,7 +13,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "未知参数: $1"
-            echo "用法: $0 [--mirror <tuna|ustc|aliyun>]"
+            echo "用法: $0 [--mirror <tuna|ustc|aliyun|restore>]"
             exit 1
             ;;
     esac
@@ -39,9 +39,17 @@ case "$MIRROR" in
         CASK_GIT="https://mirrors.aliyun.com/homebrew/homebrew-cask.git"
         BOTTLE="https://mirrors.aliyun.com/homebrew/homebrew-bottles"
         ;;
+    restore)
+        echo "恢复 Homebrew 官方源..."
+        git -C "$(brew --repo)" remote set-url origin https://github.com/Homebrew/brew.git
+        # git -C "$(brew --repo homebrew/core)" remote set-url origin https://github.com/Homebrew/homebrew-core.git
+        # git -C "$(brew --repo homebrew/cask)" remote set-url origin https://github.com/Homebrew/homebrew-cask.git
+        echo "已恢复官方源，请手动删除 ~/.zshrc 中的 HOMEBREW_NO_AUTO_UPDATE 和 HOMEBREW_BOTTLE_DOMAIN 配置"
+        exit 0
+        ;;
     *)
         echo "不支持的镜像源: $MIRROR"
-        echo "可选值: tuna, ustc, aliyun"
+        echo "可选值: tuna, ustc, aliyun, restore"
         exit 1
         ;;
 esac
