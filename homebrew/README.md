@@ -23,6 +23,12 @@
 | ustc | mirrors.ustc.edu.cn | mirrors.ustc.edu.cn/homebrew-bottles |
 | aliyun | mirrors.aliyun.com | mirrors.aliyun.com/homebrew/homebrew-bottles |
 
+### check_brew_mirror.sh — 查看当前镜像源配置
+
+```bash
+./check_brew_mirror.sh
+```
+
 ### brew_list_show_size.sh — 列出已安装包及占用大小
 
 ```bash
