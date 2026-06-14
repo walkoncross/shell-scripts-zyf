@@ -34,7 +34,9 @@ case "$MIRROR" in
         git -C "$(brew --repo)" remote set-url origin https://github.com/Homebrew/brew.git
         # git -C "$(brew --repo homebrew/core)" remote set-url origin https://github.com/Homebrew/homebrew-core.git
         # git -C "$(brew --repo homebrew/cask)" remote set-url origin https://github.com/Homebrew/homebrew-cask.git
-        echo "已恢复官方源，建议删除 ~/.zshrc 中的 HOMEBREW_BOTTLE_DOMAIN 和 HOMEBREW_NO_AUTO_UPDATE 配置"
+        echo "已恢复官方源"
+        sed -i '' '/^# >>> homebrew mirror >>>$/,/^# <<< homebrew mirror <<<$/d' ~/.zshrc 2>/dev/null
+        echo "已清理 ~/.zshrc 中的 Homebrew 环境变量"
         echo "验证当前 Homebrew 远程地址："
         git -C "$(brew --repo)" remote get-url origin
         exit 0
@@ -53,10 +55,16 @@ git -C "$(brew --repo)" remote set-url origin "$BREW_GIT"
 # git -C "$(brew --repo homebrew/core)" remote set-url origin "$CORE_GIT"
 # git -C "$(brew --repo homebrew/cask)" remote set-url origin "$CASK_GIT"
 
-echo ""
-echo "如需加速 bottle 下载，请在 ~/.zshrc 中添加："
-echo "  export HOMEBREW_BOTTLE_DOMAIN=$BOTTLE"
-echo "  export HOMEBREW_NO_AUTO_UPDATE=1"
+# 写入环境变量到 ~/.zshrc（标记块方式，避免重复）
+sed -i '' '/^# >>> homebrew mirror >>>$/,/^# <<< homebrew mirror <<<$/d' ~/.zshrc 2>/dev/null
+{
+    echo '# >>> homebrew mirror >>>'
+    echo "export HOMEBREW_BOTTLE_DOMAIN=$BOTTLE"
+    echo 'export HOMEBREW_NO_AUTO_UPDATE=1'
+    echo '# <<< homebrew mirror <<<'
+} >> ~/.zshrc
+
+echo "环境变量已写入 ~/.zshrc，执行 source ~/.zshrc 使其生效"
 echo ""
 echo "验证当前 Homebrew 远程地址："
 git -C "$(brew --repo)" remote get-url origin
