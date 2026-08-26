@@ -1,9 +1,11 @@
 # mihomo 无界面代理(替代 Clash Party)
 
-在 macOS 上用纯命令行 mihomo 替代 Clash Party 等 GUI 客户端。
+用纯命令行 mihomo 替代 Clash Party 等 GUI 客户端。
 核心进程常驻内存 ~40MB,无 Electron 渲染进程(不再有长时间运行导致的内存泄漏)。
 
 ## 安装
+
+### macOS
 
 ```bash
 ./install-mihomo-headless.sh <订阅URL>
@@ -11,6 +13,27 @@
 MIHOMO_SUB_URL=<订阅URL> ./install-mihomo-headless.sh
 # 或运行后按提示交互输入订阅 URL
 ```
+
+### Linux
+
+```bash
+sudo ./install-mihomo-headless-linux.sh <订阅URL>
+# 可选:ENABLE_TUN=1 启用 TUN 全局代理
+# 可选:MIHOMO_VERSION=1.19.30 覆盖版本号
+```
+
+### Windows
+
+```powershell
+.\install-mihomo-headless-windows.ps1 -SubUrl <订阅URL> -AsService
+# 可选 -SetProxy(设系统代理) / -EnableTun(TUN 全局代理)
+# 或双击 install-mihomo-headless-windows.bat
+```
+
+三份脚本生成的配置实质一致:
+macOS 用 brew services + networksetup;Linux 用预编译二进制 + systemd(root,`/etc/mihomo`);
+Windows 用 mihomo.exe + sc 服务(`C:\mihomo`)。
+
 
 脚本会:
 1. `brew install mihomo`
