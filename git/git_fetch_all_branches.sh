@@ -4,7 +4,7 @@
 # 默认远端：origin
 # 默认仓库：当前工作目录
 #
-# 用法: ./fetch_all_branches.sh [选项] [仓库目录]
+# 用法: ./git_fetch_all_branches.sh [选项] [仓库目录]
 
 set -u
 
