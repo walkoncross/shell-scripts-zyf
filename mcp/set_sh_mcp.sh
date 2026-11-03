@@ -2,7 +2,7 @@
 # 用途：批量注册公司内部 MCP 服务到 Claude Code（user 作用域）
 #
 # 用法：
-#   export SH_MCP_API_KEY=xxxxx
+#   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入
 #   ./set_sh_mcp.sh            # 仅注册尚不存在的服务（已存在则跳过）
 #   ./set_sh_mcp.sh --force    # 先移除再重新注册（用于更新 key）
 #   ./set_sh_mcp.sh --dry-run  # 只打印命令，不实际执行
@@ -23,7 +23,7 @@ usage() {
   --dry-run  只打印将要执行的命令
   --help     显示帮助
 
-需要先设置环境变量 SH_MCP_API_KEY
+需要环境变量 SH_MCP_API_KEY；未设置时会提示手动输入
 EOF
 }
 
@@ -42,9 +42,19 @@ if ! command -v claude >/dev/null 2>&1; then
     exit 1
 fi
 
+# SH_MCP_API_KEY 未设置时，交互式提示用户手动输入（不回显）
 if [[ -z "${SH_MCP_API_KEY:-}" ]]; then
-    echo "环境变量 SH_MCP_API_KEY 未设置，请先 export SH_MCP_API_KEY=xxxxx" >&2
-    exit 1
+    if [[ -t 0 ]]; then
+        read -r -s -p "请输入 SH_MCP_API_KEY（输入内容不回显）: " SH_MCP_API_KEY
+        echo
+    else
+        echo "环境变量 SH_MCP_API_KEY 未设置，且当前为非交互环境，请先 export SH_MCP_API_KEY=xxxxx" >&2
+        exit 1
+    fi
+    if [[ -z "${SH_MCP_API_KEY:-}" ]]; then
+        echo "SH_MCP_API_KEY 不能为空" >&2
+        exit 1
+    fi
 fi
 
 # 服务清单：名称|传输方式|额外 header（可选）
