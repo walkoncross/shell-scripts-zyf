@@ -2,7 +2,7 @@
 # 用途：批量注册公司内部 MCP 服务到 Claude Code（user 作用域）
 #
 # 用法：
-#   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入（输入以 * 回显，可确认后重输）
+#   export CJJ_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入（输入以 * 回显，可确认后重输）
 #   ./register_shuhe_mcp_servers.sh                     # 交互式选择服务（终端下）
 #   ./register_shuhe_mcp_servers.sh sh_wiki sh_jira     # 直接指定服务（也可写 sh_wiki,sh_jira）
 #   ./register_shuhe_mcp_servers.sh --all               # 跳过交互，注册全部服务
@@ -37,13 +37,13 @@ SERVICES="$(cat <<'EOF'
 sh_wiki|http|                         # 阅读文档
 sh_database_struct|http|              # 表结构访问
 sh_database_design|http|              # 数据库设计
+sh_database_search|http|x-cjj-mcp-name:sh_database_search   # 数据库查询
 sh_knowledge_base_retrieval|http|     # 知识检索
 sh_dp_mcp|http|                       # Dataphin(DP) 平台
 sh_jira|http|                         # Jira 项目管理
-sh_bocha_search|sse|x-cjj-mcp-name:sh_bocha_search   # 联网搜索
+sh_byte_web_search|http|x-cjj-mcp-name:sh_byte_web_search   # 联网搜索(火山引擎)，支持搜网页和图片
 sh_metricplus|http|                   # 监控中心指标
 sh_sql_optimizer_mcp|http|            # SQL 优化
-sh_ocr|http|                          # PDF/PPT OCR
 EOF
 )"
 
@@ -132,14 +132,14 @@ usage() {
   非交互环境（如 cron、管道）下不提问，默认注册全部
 
 环境变量:
-  SH_MCP_API_KEY  必填；未设置时会在终端提示手动输入（输入以 * 回显）
+  CJJ_MCP_API_KEY  必填；未设置时会在终端提示手动输入（输入以 * 回显）
   MCP_BASE_URL    MCP 服务根地址，默认 http://mcp.dmz.prod.caijj.net/mcp
 
 示例:
   ./register_shuhe_mcp_servers.sh                  # 交互式选择
   ./register_shuhe_mcp_servers.sh sh_wiki sh_jira  # 只注册这两个服务
   ./register_shuhe_mcp_servers.sh --all --force    # 全部重新注册（更新 key）
-  ./register_shuhe_mcp_servers.sh --dry-run sh_ocr # 只查看将执行的命令
+  ./register_shuhe_mcp_servers.sh --dry-run sh_jira # 只查看将执行的命令
 EOF
 }
 
@@ -208,8 +208,8 @@ read_masked() {
     trap 'restore_tty; exit 130' INT TERM
     stty -echo
 
-    printf '请输入 SH_MCP_API_KEY（输入时以 * 显示）: '
-    SH_MCP_API_KEY=""
+    printf '请输入 CJJ_MCP_API_KEY（输入时以 * 显示）: '
+    CJJ_MCP_API_KEY=""
     while :; do
         IFS= read -rn1 char || {
             restore_tty
@@ -224,13 +224,13 @@ read_masked() {
                 echo; echo "已取消" >&2; exit 1
                 ;;
             $'\177'|$'\b')  # 退格
-                if [[ -n "$SH_MCP_API_KEY" ]]; then
-                    SH_MCP_API_KEY="${SH_MCP_API_KEY%?}"
+                if [[ -n "$CJJ_MCP_API_KEY" ]]; then
+                    CJJ_MCP_API_KEY="${CJJ_MCP_API_KEY%?}"
                     printf '\b \b'
                 fi
                 ;;
             *)
-                SH_MCP_API_KEY+="$char"
+                CJJ_MCP_API_KEY+="$char"
                 printf '*'
                 ;;
         esac
@@ -240,17 +240,17 @@ read_masked() {
     echo
 }
 
-# SH_MCP_API_KEY 未设置时，交互式提示用户手动输入（以 * 回显），并显示脱敏预览供核对
+# CJJ_MCP_API_KEY 未设置时，交互式提示用户手动输入（以 * 回显），并显示脱敏预览供核对
 read_api_key() {
     local confirm
     while :; do
         read_masked
-        if [[ -z "$SH_MCP_API_KEY" ]]; then
+        if [[ -z "$CJJ_MCP_API_KEY" ]]; then
             echo "不能为空，请重新输入" >&2
             continue
         fi
         # 只显示首尾 4 位和长度，既能核对是否输错，又不把明文留在屏幕上/日志里
-        printf '已输入: %s（长度 %d）\n' "$(mask_key "$SH_MCP_API_KEY")" "${#SH_MCP_API_KEY}"
+        printf '已输入: %s（长度 %d）\n' "$(mask_key "$CJJ_MCP_API_KEY")" "${#CJJ_MCP_API_KEY}"
         read -r -p "确认使用该 key? [Y/n]: " confirm || {
             echo; echo "已取消" >&2; exit 1
         }
@@ -261,11 +261,11 @@ read_api_key() {
     done
 }
 
-if [[ -z "${SH_MCP_API_KEY:-}" ]]; then
+if [[ -z "${CJJ_MCP_API_KEY:-}" ]]; then
     if [[ -t 0 ]]; then
         read_api_key
     else
-        echo "环境变量 SH_MCP_API_KEY 未设置，且当前为非交互环境，请先 export SH_MCP_API_KEY=xxxxx" >&2
+        echo "环境变量 CJJ_MCP_API_KEY 未设置，且当前为非交互环境，请先 export CJJ_MCP_API_KEY=xxxxx" >&2
         exit 1
     fi
 fi
@@ -303,7 +303,7 @@ while IFS='|' read -r name transport extra; do
     cmd=(claude mcp add "$name" "$url"
          --transport "$transport"
          --scope user
-         --header "X-CJJ-MCP-API-KEY:$SH_MCP_API_KEY")
+         --header "X-CJJ-MCP-API-KEY:$CJJ_MCP_API_KEY")
 
     if [[ -n "$extra" ]]; then
         cmd+=(--header "$extra")
