@@ -2,7 +2,7 @@
 # 用途：批量注册公司内部 MCP 服务到 Claude Code（user 作用域）
 #
 # 用法：
-#   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入
+#   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入（不回显，可确认后重输）
 #   ./set_sh_mcp.sh                     # 交互式选择服务（终端下）
 #   ./set_sh_mcp.sh sh_wiki sh_jira     # 直接指定服务（也可写 sh_wiki,sh_jira）
 #   ./set_sh_mcp.sh --all               # 跳过交互，注册全部服务
@@ -41,6 +41,16 @@ EOF
 # 去掉行内注释和首尾空白
 trim() {
     echo "$1" | sed -e 's/#.*//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+}
+
+# 对 key 做脱敏：只保留首尾 4 位，便于核对是否输错
+mask_key() {
+    local len="${#1}"
+    if (( len <= 8 )); then
+        printf '%*s' "$len" '' | tr ' ' '*'
+    else
+        printf '%s****%s' "${1:0:4}" "${1: -4}"
+    fi
 }
 
 # 解析服务清单为数组，便于列表展示和交互式选择
@@ -107,7 +117,7 @@ usage() {
   --help     显示帮助
 
 不指定服务名且处于终端时会交互式选择；非交互环境默认注册全部。
-需要环境变量 SH_MCP_API_KEY；未设置时会提示手动输入
+需要环境变量 SH_MCP_API_KEY；未设置时会提示手动输入（不回显，会显示脱敏预览供确认）
 EOF
 }
 
@@ -167,17 +177,35 @@ if ! command -v claude >/dev/null 2>&1; then
     exit 1
 fi
 
-# SH_MCP_API_KEY 未设置时，交互式提示用户手动输入（不回显）
+# SH_MCP_API_KEY 未设置时，交互式提示用户手动输入（不回显），并显示脱敏预览供核对
+read_api_key() {
+    local confirm
+    while :; do
+        read -r -s -p "请输入 SH_MCP_API_KEY（输入内容不回显）: " SH_MCP_API_KEY || {
+            echo; echo "已取消" >&2; exit 1
+        }
+        echo
+        if [[ -z "$SH_MCP_API_KEY" ]]; then
+            echo "不能为空，请重新输入" >&2
+            continue
+        fi
+        # 只显示首尾 4 位和长度，既能核对是否输错，又不把明文留在屏幕上/日志里
+        printf '已输入: %s（长度 %d）\n' "$(mask_key "$SH_MCP_API_KEY")" "${#SH_MCP_API_KEY}"
+        read -r -p "确认使用该 key? [Y/n]: " confirm || {
+            echo; echo "已取消" >&2; exit 1
+        }
+        case "$confirm" in
+            ""|y|Y|yes|YES) return 0 ;;
+            *) echo "重新输入..." ;;
+        esac
+    done
+}
+
 if [[ -z "${SH_MCP_API_KEY:-}" ]]; then
     if [[ -t 0 ]]; then
-        read -r -s -p "请输入 SH_MCP_API_KEY（输入内容不回显）: " SH_MCP_API_KEY
-        echo
+        read_api_key
     else
         echo "环境变量 SH_MCP_API_KEY 未设置，且当前为非交互环境，请先 export SH_MCP_API_KEY=xxxxx" >&2
-        exit 1
-    fi
-    if [[ -z "${SH_MCP_API_KEY:-}" ]]; then
-        echo "SH_MCP_API_KEY 不能为空" >&2
         exit 1
     fi
 fi
