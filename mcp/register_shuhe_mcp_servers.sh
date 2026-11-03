@@ -3,12 +3,12 @@
 #
 # 用法：
 #   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入（输入以 * 回显，可确认后重输）
-#   ./set_sh_mcp.sh                     # 交互式选择服务（终端下）
-#   ./set_sh_mcp.sh sh_wiki sh_jira     # 直接指定服务（也可写 sh_wiki,sh_jira）
-#   ./set_sh_mcp.sh --all               # 跳过交互，注册全部服务
-#   ./set_sh_mcp.sh --list              # 列出可选服务
-#   ./set_sh_mcp.sh --force             # 先移除再重新注册（用于更新 key）
-#   ./set_sh_mcp.sh --dry-run           # 只打印命令，不实际执行
+#   ./register_shuhe_mcp_servers.sh                     # 交互式选择服务（终端下）
+#   ./register_shuhe_mcp_servers.sh sh_wiki sh_jira     # 直接指定服务（也可写 sh_wiki,sh_jira）
+#   ./register_shuhe_mcp_servers.sh --all               # 跳过交互，注册全部服务
+#   ./register_shuhe_mcp_servers.sh --list              # 列出可选服务
+#   ./register_shuhe_mcp_servers.sh --force             # 先移除再重新注册（用于更新 key）
+#   ./register_shuhe_mcp_servers.sh --dry-run           # 只打印命令，不实际执行
 #
 # 可选环境变量：
 #   MCP_BASE_URL  MCP 服务根地址，默认 http://mcp.dmz.prod.caijj.net/mcp
@@ -117,7 +117,7 @@ interactive_select() {
 
 usage() {
     cat <<'EOF'
-用法: set_sh_mcp.sh [服务名...] [--all] [--force] [--dry-run] [--list] [--help]
+用法: register_shuhe_mcp_servers.sh [服务名...] [--all] [--force] [--dry-run] [--list] [--help]
   服务名     要注册的服务，可写多个或用逗号分隔
   --all      跳过交互，注册全部服务
   --list     列出可选服务
