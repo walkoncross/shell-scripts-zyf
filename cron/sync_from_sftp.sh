@@ -18,20 +18,12 @@ SFTP_PORT="22"                       # SFTP端口，通常是22
 SFTP_USER="your_username"            # SFTP用户名
 SFTP_PASS="your_password"            # SFTP密码
 REMOTE_DIR="/path/to/remote/dir"     # 远程服务器目标路径
-<<<<<<< HEAD
-
-# 日志文件路径
-LOG_FILE="/var/log/sync_from_sftp.log"
-=======
->>>>>>> 57c9ab6 (update conr/sync_from_sftp.sh)
 
 # 获取当前日期（格式：YYYY-MM-DD）
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
 echo "----------------------------------------"  | tee -a "$LOG_FILE"
 
-<<<<<<< HEAD
-=======
 # 记录开始时间
 echo "[$(date +'%Y-%m-%d %H:%M:%S')] 开始同步检查..."  | tee -a "$LOG_FILE"
 
@@ -46,7 +38,6 @@ if [[ ! -f "$LFTP_PATH" ]]; then
     exit 1
 fi
 
->>>>>>> 57c9ab6 (update conr/sync_from_sftp.sh)
 # 执行同步操作
 echo "[$(date +'%Y-%m-%d %H:%M:%S')] 执行同步..."  | tee -a "$LOG_FILE"
 echo "lftp path: $LFTP_PATH"  | tee -a "$LOG_FILE"
