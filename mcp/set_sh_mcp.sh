@@ -2,7 +2,7 @@
 # 用途：批量注册公司内部 MCP 服务到 Claude Code（user 作用域）
 #
 # 用法：
-#   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入（不回显，可确认后重输）
+#   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入（输入以 * 回显，可确认后重输）
 #   ./set_sh_mcp.sh                     # 交互式选择服务（终端下）
 #   ./set_sh_mcp.sh sh_wiki sh_jira     # 直接指定服务（也可写 sh_wiki,sh_jira）
 #   ./set_sh_mcp.sh --all               # 跳过交互，注册全部服务
@@ -21,6 +21,15 @@ DRY_RUN=0
 LIST_ONLY=0
 ALL=0
 SELECTED_ARGS=()
+
+# 终端状态备份：读取 key 期间关闭回显，退出/中断时恢复
+STTY_SAVED=""
+restore_tty() {
+    if [[ -n "$STTY_SAVED" ]]; then
+        stty "$STTY_SAVED" 2>/dev/null || true
+        STTY_SAVED=""
+    fi
+}
 
 # 服务清单：名称|传输方式|额外 header（可选）
 # 拆成多行是为了保持可读，逐项含义见行尾注释
@@ -117,7 +126,7 @@ usage() {
   --help     显示帮助
 
 不指定服务名且处于终端时会交互式选择；非交互环境默认注册全部。
-需要环境变量 SH_MCP_API_KEY；未设置时会提示手动输入（不回显，会显示脱敏预览供确认）
+需要环境变量 SH_MCP_API_KEY；未设置时会提示手动输入（输入以 * 回显，会显示脱敏预览供确认）
 EOF
 }
 
@@ -177,14 +186,52 @@ if ! command -v claude >/dev/null 2>&1; then
     exit 1
 fi
 
-# SH_MCP_API_KEY 未设置时，交互式提示用户手动输入（不回显），并显示脱敏预览供核对
+# 逐字符读取 key：每输入一个字符回显一个 *，支持退格删除，回车结束
+# 期间持续关闭终端回显，避免逐字符读取的间隙把明文打到屏幕上
+read_masked() {
+    local char
+    STTY_SAVED="$(stty -g)"
+    trap 'restore_tty' EXIT
+    trap 'restore_tty; exit 130' INT TERM
+    stty -echo
+
+    printf '请输入 SH_MCP_API_KEY（输入时以 * 显示）: '
+    SH_MCP_API_KEY=""
+    while :; do
+        IFS= read -rn1 char || {
+            restore_tty
+            echo; echo "已取消" >&2; exit 1
+        }
+        if [[ -z "$char" ]]; then
+            break  # 回车结束输入
+        fi
+        case "$char" in
+            $'\004')  # Ctrl-D 取消
+                restore_tty
+                echo; echo "已取消" >&2; exit 1
+                ;;
+            $'\177'|$'\b')  # 退格
+                if [[ -n "$SH_MCP_API_KEY" ]]; then
+                    SH_MCP_API_KEY="${SH_MCP_API_KEY%?}"
+                    printf '\b \b'
+                fi
+                ;;
+            *)
+                SH_MCP_API_KEY+="$char"
+                printf '*'
+                ;;
+        esac
+    done
+    restore_tty
+    trap - EXIT INT TERM
+    echo
+}
+
+# SH_MCP_API_KEY 未设置时，交互式提示用户手动输入（以 * 回显），并显示脱敏预览供核对
 read_api_key() {
     local confirm
     while :; do
-        read -r -s -p "请输入 SH_MCP_API_KEY（输入内容不回显）: " SH_MCP_API_KEY || {
-            echo; echo "已取消" >&2; exit 1
-        }
-        echo
+        read_masked
         if [[ -z "$SH_MCP_API_KEY" ]]; then
             echo "不能为空，请重新输入" >&2
             continue
