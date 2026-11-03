@@ -3,8 +3,9 @@
 #
 # 用法：
 #   export SH_MCP_API_KEY=xxxxx   # 未设置时会提示手动输入
-#   ./set_sh_mcp.sh                     # 注册全部服务（已存在则跳过）
-#   ./set_sh_mcp.sh sh_wiki sh_jira     # 只注册指定服务（也可写 sh_wiki,sh_jira）
+#   ./set_sh_mcp.sh                     # 交互式选择服务（终端下）
+#   ./set_sh_mcp.sh sh_wiki sh_jira     # 直接指定服务（也可写 sh_wiki,sh_jira）
+#   ./set_sh_mcp.sh --all               # 跳过交互，注册全部服务
 #   ./set_sh_mcp.sh --list              # 列出可选服务
 #   ./set_sh_mcp.sh --force             # 先移除再重新注册（用于更新 key）
 #   ./set_sh_mcp.sh --dry-run           # 只打印命令，不实际执行
@@ -18,6 +19,7 @@ MCP_BASE_URL="${MCP_BASE_URL:-http://mcp.dmz.prod.caijj.net/mcp}"
 FORCE=0
 DRY_RUN=0
 LIST_ONLY=0
+ALL=0
 SELECTED_ARGS=()
 
 # 服务清单：名称|传输方式|额外 header（可选）
@@ -41,25 +43,70 @@ trim() {
     echo "$1" | sed -e 's/#.*//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
+# 解析服务清单为数组，便于列表展示和交互式选择
+SERVICE_NAMES=()
+SERVICE_DESCS=()
+while IFS='|' read -r name transport rest; do
+    name="$(trim "$name")"
+    [[ -z "$name" ]] && continue
+    SERVICE_NAMES+=("$name")
+    SERVICE_DESCS+=("$(printf '%s' "$rest" | sed -e 's/^[^#]*#//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')")
+done <<< "$SERVICES"
+
 print_services() {
+    local i=0
     echo "可选服务："
-    while IFS='|' read -r name transport rest; do
-        name="$(trim "$name")"
-        [[ -z "$name" ]] && continue
-        desc="$(printf '%s' "$rest" | sed -e 's/^[^#]*#//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-        printf '  %-30s %s\n' "$name" "$desc"
-    done <<< "$SERVICES"
+    while [[ "$i" -lt "${#SERVICE_NAMES[@]}" ]]; do
+        printf '  %-30s %s\n' "${SERVICE_NAMES[$i]}" "${SERVICE_DESCS[$i]}"
+        i=$((i + 1))
+    done
+}
+
+# 交互式多选：输入序号（逗号/空格分隔），直接回车 = 全部
+interactive_select() {
+    local i=0 answer n
+    echo "请选择要安装的 MCP 服务："
+    while [[ "$i" -lt "${#SERVICE_NAMES[@]}" ]]; do
+        printf '  %2d) %-30s %s\n' "$((i + 1))" "${SERVICE_NAMES[$i]}" "${SERVICE_DESCS[$i]}"
+        i=$((i + 1))
+    done
+    echo "输入序号（逗号或空格分隔，例如 1,3）；直接回车 = 全部；q = 取消"
+    read -r -p "> " answer || { echo; echo "已取消" >&2; exit 1; }
+
+    case "$answer" in
+        q|Q) echo "已取消" >&2; exit 1 ;;
+        "") SELECTED_ARGS=("${SERVICE_NAMES[@]}"); return ;;
+    esac
+
+    local picks=()
+    local -a _picks
+    IFS=', ' read -r -a _picks <<< "$answer"
+    for n in "${_picks[@]}"; do
+        [[ -z "$n" ]] && continue
+        if ! [[ "$n" =~ ^[0-9]+$ ]] || [[ "$n" -lt 1 || "$n" -gt "${#SERVICE_NAMES[@]}" ]]; then
+            echo "无效序号: $n（可选范围 1-${#SERVICE_NAMES[@]}）" >&2
+            exit 1
+        fi
+        picks+=("${SERVICE_NAMES[$((n - 1))]}")
+    done
+    if [[ ${#picks[@]} -eq 0 ]]; then
+        echo "未选择任何服务" >&2
+        exit 1
+    fi
+    SELECTED_ARGS=("${picks[@]}")
 }
 
 usage() {
     cat <<'EOF'
-用法: set_sh_mcp.sh [服务名...] [--force] [--dry-run] [--list] [--help]
-  服务名     要注册的服务，可写多个或用逗号分隔；不写则注册全部
+用法: set_sh_mcp.sh [服务名...] [--all] [--force] [--dry-run] [--list] [--help]
+  服务名     要注册的服务，可写多个或用逗号分隔
+  --all      跳过交互，注册全部服务
   --list     列出可选服务
   --force    先移除已注册的服务再重新注册
   --dry-run  只打印将要执行的命令
   --help     显示帮助
 
+不指定服务名且处于终端时会交互式选择；非交互环境默认注册全部。
 需要环境变量 SH_MCP_API_KEY；未设置时会提示手动输入
 EOF
 }
@@ -69,6 +116,7 @@ for arg in "$@"; do
         --force)   FORCE=1 ;;
         --dry-run) DRY_RUN=1 ;;
         --list)    LIST_ONLY=1 ;;
+        --all)     ALL=1 ;;
         --help|-h) usage; exit 0 ;;
         -*)        echo "未知参数: $arg" >&2; usage >&2; exit 1 ;;
         *)
@@ -82,6 +130,11 @@ done
 if [[ "$LIST_ONLY" -eq 1 ]]; then
     print_services
     exit 0
+fi
+
+# 未指定服务名时：终端下交互式选择，非交互环境注册全部
+if [[ ${#SELECTED_ARGS[@]} -eq 0 && "$ALL" -eq 0 && -t 0 ]]; then
+    interactive_select
 fi
 
 # 未指定服务名时注册全部；指定时先校验名称并对齐成 " name1 name2 " 便于匹配
