@@ -1,0 +1,1 @@
+{"audio_file": "./data/0_2.mp3", "sample_rate": 22050, "audo_len": 530496, "duration": 24.058775510204082, "max_val": 0.6489371061325073, "trim_min_level": 0.01, "trim_start_idx": 6542, "trim_end_idx": 487512, "trim_start_time": 0.2966893424036281, "trim_end_time": 22.10938775510204, "trim_duration": 21.812698412698413}

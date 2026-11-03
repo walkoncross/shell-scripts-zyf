@@ -2,14 +2,23 @@ echo $*
 
 while getopts ":a:b:c" opt;
 do
+    echo "-->" $opt
 	case $opt in
-                a ) echo $OPTARG
-               	    echo "a $OPTIND";;
-                b ) echo "b $OPTIND";;
-                c ) echo "c $OPTIND";;
-                * ) echo "error"
-                    exit 1;;
-        esac
+        a ) echo $OPTARG
+            echo "a $OPTIND"
+            echo "---";;
+        b ) echo $OPTARG
+            echo "b $OPTIND"
+            echo "---";;
+        c ) echo "c $OPTIND"
+            echo "---";;
+        \? ) echo $opt
+            echo "unsupported option"
+            echo "---";;
+        : ) echo "Error: option need OPTARG"
+            echo "---"
+            exit 1;;
+    esac
 done
 
 echo $OPTIND

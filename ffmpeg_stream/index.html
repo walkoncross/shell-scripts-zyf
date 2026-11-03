@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Janus WebRTC Stream</title>
+    <style>
+        video {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="janus.js"></script>
+</head>
+<body>
+    <h1>Janus WebRTC Stream</h1>
+    <video id="remoteVideo" autoplay playsinline controls></video>
+
+    <script>
+        const server = "http://localhost:8088/janus"; // Janus server URL
+        let janus = null;
+        let streaming = null;
+        let opaqueId = "streamingtest-" + Janus.randomString(12);
+
+        Janus.init({
+            debug: "all",
+            callback: function() {
+                janus = new Janus({
+                    server: server,
+                    success: function() {
+                        janus.attach({
+                            plugin: "janus.plugin.streaming",
+                            opaqueId: opaqueId,
+                            success: function(pluginHandle) {
+                                streaming = pluginHandle;
+                                const body = { request: "watch", id: 1 }; // Stream ID as configured in Janus
+                                streaming.send({ message: body });
+                            },
+                            error: function(error) {
+                                console.error("Error attaching plugin:", error);
+                            },
+                            onmessage: function(msg, jsep) {
+                                if (jsep !== undefined && jsep !== null) {
+                                    streaming.createAnswer({
+                                        jsep: jsep,
+                                        media: { audioSend: false, videoSend: false }, // We want recvonly audio/video
+                                        success: function(jsep) {
+                                            const body = { request: "start" };
+                                            streaming.send({ message: body, jsep: jsep });
+                                        },
+                                        error: function(error) {
+                                            console.error("WebRTC error:", error);
+                                        }
+                                    });
+                                }
+                            },
+                            onremotestream: function(stream) {
+                                const videoElement = document.getElementById('remoteVideo');
+                                Janus.attachMediaStream(videoElement, stream);
+                            },
+                            oncleanup: function() {
+                                console.log("Stream ended.");
+                            }
+                        });
+                    },
+                    error: function(error) {
+                        console.error("Janus error:", error);
+                    },
+                    destroyed: function() {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

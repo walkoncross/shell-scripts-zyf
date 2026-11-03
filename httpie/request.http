@@ -1,0 +1,10 @@
+POST /post HTTP/1.1
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 18
+User-Agent: HTTPie/3.2.3
+Accept: application/json, */*;q=0.5
+Content-Type: application/json
+Host: pie.dev
+
+{"hello": "world"}

@@ -1,1 +1,41 @@
+# Ignore macOS system files
 .DS_Store
+
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*.swn
+*.swa
+*.swn
+*.swd
+*.sws
+*.swo
+*.swn 
+
+# Ignore backup files
+*~
+*-bk.*
+*.bak
+*.bk
+*_bk.*
+
+# Ignore log files
+*.log
+
+# Ignore cache files
+*.cache
+
+# coding prompts
+.prompts/
+
+# ossutil
+ossutil_output/
+
+# tmp files
+Users-admin-work-folders*
+
+# local copies
+sync_git_folders-zyf*

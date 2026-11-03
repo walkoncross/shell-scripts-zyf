@@ -1,0 +1,1 @@
+../macos/webp_to_jpg_by_sips_under_dir.sh
