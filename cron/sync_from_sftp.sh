@@ -6,7 +6,7 @@ LFTP_PATH="/opt/homebrew/bin/lftp"
 # LFTP_PATH="$(readlink -f $LFTP_PATH)"
 
 # 日志文件路径
-LOG_FILE="$HOME/logs/sync_to_sftp.log"
+LOG_FILE="$HOME/logs/sync_from_sftp.log"
 
 # 确保日志目录存在
 mkdir -p "$(dirname "$LOG_FILE")"

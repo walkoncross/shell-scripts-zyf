@@ -19,9 +19,6 @@ SFTP_USER="your_username"            # SFTP用户名
 SFTP_PASS="your_password"            # SFTP密码
 REMOTE_DIR="/path/to/remote/dir"     # 远程服务器目标路径
 
-# 日志文件路径
-LOG_FILE="/var/log/sync_to_sftp.log"
-
 # 获取当前日期（格式：YYYY-MM-DD）
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
