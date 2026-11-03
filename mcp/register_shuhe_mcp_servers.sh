@@ -117,16 +117,29 @@ interactive_select() {
 
 usage() {
     cat <<'EOF'
-用法: register_shuhe_mcp_servers.sh [服务名...] [--all] [--force] [--dry-run] [--list] [--help]
-  服务名     要注册的服务，可写多个或用逗号分隔
-  --all      跳过交互，注册全部服务
-  --list     列出可选服务
-  --force    先移除已注册的服务再重新注册
-  --dry-run  只打印将要执行的命令
-  --help     显示帮助
+用法: register_shuhe_mcp_servers.sh [服务名...] [选项]
 
-不指定服务名且处于终端时会交互式选择；非交互环境默认注册全部。
-需要环境变量 SH_MCP_API_KEY；未设置时会提示手动输入（输入以 * 回显，会显示脱敏预览供确认）
+选项:
+  --all        跳过交互，注册全部服务
+  --list       列出可选服务（无需设置 key）
+  --force      先移除已注册的服务再重新注册（用于更新 key）
+  --dry-run    只打印将要执行的命令，不实际执行
+  -h, --help   显示本帮助
+
+选择服务:
+  不指定服务名时：终端下交互式输入序号（可多选，如 1,3；直接回车=全部）
+  指定服务名时：可写多个，也可用逗号分隔，例如 sh_wiki sh_jira / sh_wiki,sh_jira
+  非交互环境（如 cron、管道）下不提问，默认注册全部
+
+环境变量:
+  SH_MCP_API_KEY  必填；未设置时会在终端提示手动输入（输入以 * 回显）
+  MCP_BASE_URL    MCP 服务根地址，默认 http://mcp.dmz.prod.caijj.net/mcp
+
+示例:
+  ./register_shuhe_mcp_servers.sh                  # 交互式选择
+  ./register_shuhe_mcp_servers.sh sh_wiki sh_jira  # 只注册这两个服务
+  ./register_shuhe_mcp_servers.sh --all --force    # 全部重新注册（更新 key）
+  ./register_shuhe_mcp_servers.sh --dry-run sh_ocr # 只查看将执行的命令
 EOF
 }
 
